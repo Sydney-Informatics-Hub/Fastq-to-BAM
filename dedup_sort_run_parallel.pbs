@@ -1,0 +1,50 @@
+#!/bin/bash
+
+# Mark duplicates and create split and disc files with samblaster
+# Sort with samtools
+# This task is optimally suited to Broadwell nodes, which are not online
+# for Gadi yet. Much benchmarking of one TN pair found
+# the best config on Gadi normal nodes is 48 CPU (for the RAM), 24 CPU
+# for samtools sort, 4 GB RAM per sort thread, 12 CPU view.
+# Process normal and normal as separate jobs due to ~ double walltime requirement for normal
+
+#PBS -P <project>
+#PBS -N ds-normal
+#PBS -l ncpus=768
+#PBS -l mem=3040gb
+#PBS -l walltime=03:00:00
+#PBS -q normal
+#PBS -W umask=022 
+#PBS -l wd 
+#PBS -o ./Logs/dedup_sort-normal.o 
+#PBS -e ./Logs/dedup_sort-normal.e 
+#PBS -lstorage=scratch/<project>
+
+set -e
+
+module load openmpi/4.0.2
+module load nci-parallel/1.0.0
+
+SCRIPT=./dedup_sort.sh 
+INPUTS=./Inputs/dedup_sort.inputs-normal  
+
+NCPUS=48 #Private node per sample, needs all the RAM, but give samtools fewer threads
+
+mkdir -p ./Dedup_sort ./SplitDisc ./Error_capture/Dedup_sort ./Logs/Dedup_sort
+
+
+#########################################################
+# Do not edit below this line (unless running on a node that 
+# does not have 48 CPU, in which case edit the value of 'CPN'
+#########################################################
+
+CPN=48 #CPUs per node 
+M=$(( CPN / NCPUS )) #tasks per node
+
+sed "s|^|${SCRIPT} |" ${INPUTS} > ${PBS_JOBFS}/input-file
+
+mpirun --np $((M * PBS_NCPUS / 48)) \
+        --map-by node:PE=${NCPUS} \
+        nci-parallel \
+        --verbose \
+        --input-file ${PBS_JOBFS}/input-file

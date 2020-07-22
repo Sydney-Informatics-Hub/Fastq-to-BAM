@@ -1,0 +1,54 @@
+#!/bin/bash
+
+# Run 12 x 4 CPU splitting tasks per node. 4 CPU has optimal efficiency. 
+# Request whole nodes only - eg for 31 pairs, this requires 124 CPU
+# to run all tasks in parallel, so 2.5 nodes --> round up to 3 nodes (144 CPU)
+# A ~40 GB fastq will take ~ 40 mins to split
+# To generate split_fastq.input, please run 'bash split_fastq_make_input.sh'
+# after checking that the regex to find the fastq files matches
+# Need to check the regex in the make input script AND
+# the split_fastq.sh script.  (eg do the fastq files end with something
+# other than R1.f*q.gz/R2.f*q.gz)
+
+#PBS -P <project>
+#PBS -N split_fastq
+#PBS -l walltime=1:00:00
+#PBS -l ncpus=144
+#PBS -l mem=570GB
+#PBS -q normal
+#PBS -W umask=022
+#PBS -l wd
+#PBS -o ./Logs/split_fastq.o
+#PBS -e ./Logs/split_fastq.e
+#PBS -lstorage=scratch/<project>
+
+module load openmpi/4.0.2
+module load nci-parallel/1.0.0
+
+SCRIPT=./split_fastq.sh
+INPUTS=./Inputs/split_fastq.inputs   
+
+NCPUS=4 #cpus per parallel task. This can be increased, but 4 is optimal E
+sed -i "s/$/,$NCPUS/" $INPUTS 
+
+mkdir -p Fastq_split
+mkdir -p Fastp_logs
+
+
+
+#########################################################
+# Do not edit below this line (unless running on a node that 
+# does not have 48 CPU, in which case edit the value of 'CPN'
+#########################################################
+
+CPN=48 #CPUs per node 
+M=$(( CPN / NCPUS )) #tasks per node
+
+sed "s|^|${SCRIPT} |" ${INPUTS} > ${PBS_JOBFS}/input-file
+
+mpirun --np $((M * PBS_NCPUS / 48)) \
+        --map-by node:PE=${NCPUS} \
+        nci-parallel \
+        --verbose \
+        --input-file ${PBS_JOBFS}/input-file
+

@@ -1,0 +1,61 @@
+#!/bin/bash
+
+# Parallel alignment of 500 million read fastq pairs with bwakit 
+# First run 'bash align_make_input.sh- to make inputs
+# This will report the total number of fastq pairs to be aligned
+# Batch the inputs (manually, using head/tail to make ~ evenly sized chunks)
+# Into ~ 20,000 inputs per .input file
+# Name these 'align,input-chunk1, align,input-chunk2' etc. Consistent naming
+# enables easy use of sed to modify this pbs script between submissions
+# Each chunk of ~ 20,000 inputs should request 120 nodes for 1 hour (but 
+# should finish in around 30-35 minutes). This gives a good trade off 
+# between parallelism and queue time. Larger requests are feasible but in 
+# general, ~ 20K batching will schedule better
+
+
+#PBS -P <project>
+#PBS -N align-chunk1
+#PBS -l walltime=01:00:00
+#PBS -l ncpus=5760
+#PBS -l mem=22800GB
+#PBS -q normal
+#PBS -W umask=022
+#PBS -l wd
+#PBS -o ./Logs/align-chunk1.o 
+#PBS -e ./Logs/align-chunk1.e 
+#PBS -lstorage=scratch/<project>
+
+
+module load openmpi/4.0.2
+module load nci-parallel/1.0.0
+
+
+set -e
+
+
+SCRIPT=./align.sh  
+INPUTS=./Inputs/align.inputs-chunk1
+
+
+NCPUS=8 #cpus per parallel task
+sed -i "s/$/,$NCPUS/" $INPUTS 
+
+
+mkdir -p ./Align_split ./HLA_fastq ./Logs/BWA ./Error_capture ./Error_capture/Align_split
+
+
+#########################################################
+# Do not edit below this line (unless running on a node that 
+# does not have 48 CPU, in which case edit the value of 'CPN'
+#########################################################
+
+CPN=48 #CPUs per node 
+M=$(( CPN / NCPUS )) #tasks per node
+
+sed "s|^|${SCRIPT} |" ${INPUTS} > ${PBS_JOBFS}/input-file
+
+mpirun --np $((M * PBS_NCPUS / 48)) \
+        --map-by node:PE=${NCPUS} \
+        nci-parallel \
+        --verbose \
+        --input-file ${PBS_JOBFS}/input-file
