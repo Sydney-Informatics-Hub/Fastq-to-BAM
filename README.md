@@ -41,13 +41,13 @@ If you would like to use this pipeline with an alternate reference genome/specie
 10) bqsr_merge
 
 <cohort_name>.config MUST match the following format:
-#SampleID       LabSampleID     SeqCentre       Library(default=1)
 
-where the 'SampleID' is the unique identifier enabling one to recognise which fastq belong to the sme sample, and the 'LabSampleID' is the desired name for the output files for that sample, ie the 'in-house ID'. Some metadata is collected in align_make_input.sh - please read the headers and check this is suitable for your data, and edit as required.
-For samples with multiple fastq per sample, this format is fine assuming that all the fastq pairs for any one sample have some ID in common. For samples with more than one library prep, some modifications to 'align_make_input.sh' will be required - please view the headers and 'hashed out' example within that script and edit as required.
+#SampleID\tLabSampleID\tSeqCentre\tLibrary(default=1)
 
-Each stage has (at least) 3 scripts: a 'make_input.sh', a 'run_parallel.sh' and a '.sh'. The make input script is to be run first, then the run parallel script submits parallel instances of the .sh task script.
-Some stages have additional steps, eg collecting logs (split_fastq and dedup_sort), checking outputs (split_fastq, merge_align, dedup_sort) and bqsr_merge_GATK (bqsr_merge_make_bamLists.sh).
+where the 'SampleID' is the unique identifier enabling one to recognise which fastq belong to the sme sample, and the 'LabSampleID' is the desired name for the output files for that sample, ie the 'in-house ID'. One row per sample. Some metadata is collected in align_make_input.sh - please read the headers and check this is suitable for your data, and edit as required. For samples with multiple fastq per sample, this format is fine assuming that all the fastq pairs for any one sample have some ID in common. For samples with more than one library prep, some modifications to 'align_make_input.sh' will be required - please view the headers and 'hashed out' example within that script and edit as required.
+
+Each stage has (at least) 3 scripts: a 'make_input.sh', a 'run_parallel.sh' and a '.sh'. The make input script is to be run first, then the run parallel script submits parallel instances of the .sh task script. Some stages have additional steps, eg collecting logs (split_fastq and dedup_sort), checking outputs (split_fastq, merge_align, dedup_sort) and bqsr_merge_GATK (bqsr_merge_make_bamLists.sh).
+
 Error checking for each job MUST include:
 	a) Checking the 'error capture' directory for each job. Should be empty.
 	b) Checking the .e PBS logs. All successful tasks should have '...exited with status 0' but not all '...exited with status 0' tasks are successful
@@ -56,14 +56,14 @@ Error checking for each job MUST include:
 	
 # References
 
-BWA-MEM: Li 2013 https://arxiv.org/abs/1303.3997
-BWA-kit: Li 2014 https://github.com/lh3/bwa/tree/master/bwakit
-Fastp: Chen et al 2018 https://academic.oup.com/bioinformatics/article/34/17/i884/5093234
-GATK4: Van der Auwera et al. 2013 https://currentprotocols.onlinelibrary.wiley.com/doi/abs/10.1002/0471250953.bi1110s43
-GNU Parallel: Tange 2018 https://doi.org/10.5281/zenodo.1146014
-OpenMPI: Graham et al. 2015 https://dl.acm.org/doi/10.1007/11752578_29
-SAMbamba: Tarasov et al. 2015 https://academic.oup.com/bioinformatics/article/31/12/2032/214758
-SAMblaster: Faust and Hall 2014 https://academic.oup.com/bioinformatics/article/30/17/2503/2748175
-SAMtools: Li et al. 2009 https://www.ncbi.nlm.nih.gov/pubmed/19505943
+- BWA-MEM: Li 2013 https://arxiv.org/abs/1303.3997
+- BWA-kit: Li 2014 https://github.com/lh3/bwa/tree/master/bwakit
+- Fastp: Chen et al 2018 https://academic.oup.com/bioinformatics/article/34/17/i884/5093234
+- GATK4: Van der Auwera et al. 2013 https://currentprotocols.onlinelibrary.wiley.com/doi/abs/10.1002/0471250953.bi1110s43
+- GNU Parallel: Tange 2018 https://doi.org/10.5281/zenodo.1146014
+- OpenMPI: Graham et al. 2015 https://dl.acm.org/doi/10.1007/11752578_29
+- SAMbamba: Tarasov et al. 2015 https://academic.oup.com/bioinformatics/article/31/12/2032/214758
+- SAMblaster: Faust and Hall 2014 https://academic.oup.com/bioinformatics/article/30/17/2503/2748175
+- SAMtools: Li et al. 2009 https://www.ncbi.nlm.nih.gov/pubmed/19505943
 
 	
