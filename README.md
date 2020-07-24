@@ -19,6 +19,7 @@ This pipeline is written for alignment of human whole genome sequence data to th
 The complete set of required files for hg38 + alt can be downloaded with the following commands, which should be subitted as a job to Gadi's 'copyq':
 
 wget https://cloudstor.aarnet.edu.au/plus/s/CHeAuEsBkHalDvI/download -O Reference.tar.gz
+
 wget https://cloudstor.aarnet.edu.au/plus/s/0fN5X8tksH2PGso/download -O Reference.tar.gz.md5
 
 Verify the completeness of the download by checking md5sums.
