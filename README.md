@@ -8,9 +8,9 @@ Also to come is a collection of software exectuables on Gadi. Some of the module
 
 # Description
 
-Paired fastq files were split into smaller files of approximately 500,000 read pairs with fastp v. 0.20.0 (Chen et al. 2018) for parallel alignment. Reads were aligned to hg38 + alt contigs as downloaded by bwakit v. 0.7.17 ‘run-gen-ref’. Alignment was performed with BWA-MEM v. 0.7.17 (Li 2013), using the ‘M’ flag to mark split hits as secondary. Post-processing of the reads was performed with bwa-postalt.js from bwakit v. 0.7.17 to improve mapping quality of alt hits. During alignment, reads mapping to any of the six HLA genes were extracted to fastq format for later analysis. Scattered BAM files were merged into sample-level BAMs with SAMbamba v. 0.7.1 (Tarasov et al. 2015). Duplicate reads were marked with SAMblaster v. 0.1.24 (Faust and Hall 2014), then sorted by genomic coordinate and indexed with SAMtools v. 1.10 (Li et al. 2009). During duplicate read marking, split and discordant reads were extracted to BAM format for later analysis. Base quality score recalibration was performed with GATK v 4.1.2.0 (Van der Auwera et al. 2013). GATK SplitIntervals was used to define 32 evenly-sized genomic intervals over which GATK BaseRecalibrator was run for each sample. The 32 recalibration tables per sample were merged into one table per sample with GATK GatherReports. Base-recalibrated BAM files were produced with GATK ApplyBQSR in parallel over each of the 3,366 contigs in the hg 38 + alt reference genome, plus the unmapped reads. These were merged into a final BAM per sample with SAMbamba.
+Paired fastq files were split into smaller files of approximately 500,000 read pairs with fastp v. 0.20.0 (Chen et al. 2018) for parallel alignment. Reads were aligned to hg38 + alt contigs as downloaded by bwakit v. 0.7.17 ‘run-gen-ref’. Alignment was performed with BWA-MEM v. 0.7.17 (Li 2013), using the ‘M’ flag to mark split hits as secondary. Post-processing of the reads was performed with bwa-postalt.js from bwakit v. 0.7.17 to improve mapping quality of alt hits. During alignment, reads mapping to any of the six HLA genes were extracted to fastq format for later analysis. Scattered BAM files were merged into sample-level BAMs with SAMbamba v. 0.7.1 (Tarasov et al. 2015). Duplicate reads were marked with SAMblaster v. 0.1.24 (Faust and Hall 2014), then sorted by genomic coordinate and indexed with SAMtools v. 1.10 (Li et al. 2009). During duplicate read marking, split and discordant reads were extracted to BAM format for later analysis. Base quality score recalibration was performed with GATK v 4.1.2.0 (Van der Auwera et al. 2013). GATK SplitIntervals was used to define 32 evenly-sized genomic intervals over which GATK BaseRecalibrator was run for each sample. The 32 recalibration tables per sample were merged into one table per sample with GATK GatherReports. Base-recalibrated BAM files were produced with GATK ApplyBQSR in parallel over each of the 3,366 contigs in the hg 38 + alt reference genome, plus the unmapped reads. These were merged into a final BAM per sample with SAMbamba merge or GATK GatherBamFiles.
 
-All computation was performed on NCI ‘Gadi’ HPC, running Centos 8, PBS Pro v. 19, on Intel Xeon Cascade Lake 2 x 24 core nodes each with 192 GB RAM. All stages of the analysis were run in parallel, either massively parallel using the scatter-gather method, or parallel by sample. Parallelisation across the cluster was achieved through either GNU parallel v. 20191022 (Tange 2018) or Open MPI v. 4.0.2 (Graham et al. 2005). 
+All computation was performed on NCI ‘Gadi’ HPC, running Centos 8, PBS Pro v. 19, on Intel Xeon Cascade Lake 2 x 24 core nodes each with 192 GB ('normal' queue) or 1536 GB ('hugemem' queue) RAM. All stages of the analysis were run in parallel, either massively parallel using the scatter-gather method, or parallel by sample. Parallelisation across the cluster was achieved through either GNU parallel v. 20191022 (Tange 2018) or Open MPI v. 4.0.2 (Graham et al. 2005), along with NCI's utility script nci-parallel v 1.0.0. 
 
 # Download the reference genome
 
@@ -52,3 +52,17 @@ Error checking for each job MUST include:
 	b) Checking the .e PBS logs. All successful tasks should have '...exited with status 0' but not all '...exited with status 0' tasks are successful
 	c) Checking that the right number and size of outputs have been created
 	d) For tasks with check scripts (split_fastq, merge_align, dedup_sort) verify the TSV output mathces expectations
+	
+# References
+
+BWA-MEM: Li 2013 https://arxiv.org/abs/1303.3997
+BWA-kit: Li 2014 https://github.com/lh3/bwa/tree/master/bwakit
+Fastp: Chen et al 2018 https://academic.oup.com/bioinformatics/article/34/17/i884/5093234
+GATK4: Van der Auwera et al. 2013 https://currentprotocols.onlinelibrary.wiley.com/doi/abs/10.1002/0471250953.bi1110s43
+GNU Parallel: Tange 2018 https://doi.org/10.5281/zenodo.1146014
+OpenMPI: Graham et al. 2015 https://dl.acm.org/doi/10.1007/11752578_29
+SAMbamba: Tarasov et al. 2015 https://academic.oup.com/bioinformatics/article/31/12/2032/214758
+SAMblaster: Faust and Hall 2014 https://academic.oup.com/bioinformatics/article/30/17/2503/2748175
+SAMtools: Li et al. 2009 https://www.ncbi.nlm.nih.gov/pubmed/19505943
+
+	
