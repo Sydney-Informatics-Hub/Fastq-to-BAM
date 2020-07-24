@@ -12,8 +12,22 @@ Paired fastq files were split into smaller files of approximately 500,000 read p
 
 All computation was performed on NCI ‘Gadi’ HPC, running Centos 8, PBS Pro v. 19, on Intel Xeon Cascade Lake 2 x 24 core nodes each with 192 GB RAM. All stages of the analysis were run in parallel, either massively parallel using the scatter-gather method, or parallel by sample. Parallelisation across the cluster was achieved through either GNU parallel v. 20191022 (Tange 2018) or Open MPI v. 4.0.2 (Graham et al. 2005). 
 
+# Download the reference genome
+
+This pipeline is written for alignment of human whole genome sequence data to the hg38 + alt contigs reference. The 'Reference' folder must be located within the main working directory for the cloned repo (or a symlink created), to ensure the relative paths that are used within the scripts are correct. The Reference directory is 73 GB unpacked. 
+
+The complete set of required files for hg38 + alt can be downloaded with the following commands, which should be subitted as a job to Gadi's 'copyq':
+
+wget https://cloudstor.aarnet.edu.au/plus/s/CHeAuEsBkHalDvI/download -O Reference.tar.gz
+wget https://cloudstor.aarnet.edu.au/plus/s/0fN5X8tksH2PGso/download -O Reference.tar.gz.md5
+
+Verify the completeness of the download by checking md5sums.
+
+If you would like to use this pipeline with an alternate reference genome/species, you will need to prepare the required files (SAMtools index, GATK index, GATK split intervals for BQSR* and GATK split intervals  x 3200 for variant calling) as well as edit the scripts to the new reference name. *Split intervals for BQSR must be a minimum of 100 Mbp (eg for 3.2 Gbp hg38 + alt, this is 32 intervals). For ApplyBQSR adjust the number of contigs over which to print recalibrated BAMs. You will also need to source the known variants databases to be used for BQSR and VQSR and edit those scripts that use them accordingly. 
+
 # Overview of steps
 
+0) download, unpack and checksum the Reference
 0) make <cohort_name>.config
 1) split_fastq
 2) align
