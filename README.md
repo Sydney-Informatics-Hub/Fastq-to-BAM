@@ -28,17 +28,17 @@ If you would like to use this pipeline with an alternate reference genome/specie
 
 # Overview of steps
 
-0) download, unpack and checksum the Reference
 0) make <cohort_name>.config
-1) split_fastq
-2) align
-3) merge_align
-4) dedup_sort
-5) index
-6) bqsr_recal
-7) bqsr_gather
-8) bqsr_apply
-9) bqsr_merge
+1) download, unpack and checksum the Reference
+2) split_fastq
+3) align
+4) merge_align
+5) dedup_sort
+6) index
+7) bqsr_recal
+8) bqsr_gather
+9) bqsr_apply
+10) bqsr_merge
 
 <cohort_name>.config MUST match the following format:
 #SampleID       LabSampleID     SeqCentre       Library(default=1)
