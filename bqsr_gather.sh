@@ -1,13 +1,10 @@
-#!/bin/bash 
+#!/bin/bash
 
 #########################################################
 # 
 # Platform: NCI Gadi HPC
-# Description: Split each fastq pair into 2,000,000 lines 
-# (500,000 reads) with fastp, executed in parallel
-# Usage: this script is executed by split_fastq_run_parallel.pbs
-# Details:
-# 	Check that the regex at 'ls' matches your data. Edit as required.
+# Description: run GATK GatherBQSRReports over parallel tasks
+# Usage: this script is executed by bqsr_gather_run_parallel.pbs
 # Author: Cali Willet
 # cali.willet@sydney.edu.au
 # Date last modified: 24/07/2020
@@ -24,22 +21,19 @@
 # 
 #########################################################
 
-fastp=/scratch/<project>/apps/fastp #or replace with module load if appropriate
+module load gatk/4.1.2.0 #loads also java/jdk1.8.0_60
 
-fqpair=`echo $1 | cut -d ',' -f 1`
-file=$(basename $fqpair)
-NCPUS=`echo $1 | cut -d ',' -f 2`
+labSampleID=$1
 
-fq1=$(ls ${fqpair}*R1.f*q.gz) #Must check regex for each batch.
-fq2=$(ls ${fqpair}*R2.f*q.gz) 
+tables=$(find ./BQSR_tables -name "${labSampleID}.*.recal_data.table")
+tables=($tables)
+tables_list=''
 
-log=./Logs/Fastp/${file}.log
+for file in ${tables[@]}
+do 
+	tables_list+=" -I $file"
+done
 
-$fastp -i ${fq1} \
-	-I ${fq2} \
-	-AGQL \
-	-w $NCPUS \
-	-S 2000000 \
-	-d 0 \
-	--out1 Fastq_split/${file}_R1.fastq.gz \
-	--out2 Fastq_split/${file}_R2.fastq.gz 2>${log}
+gatk GatherBQSRReports \
+	$tables_list \
+	-O ./BQSR_tables/${labSampleID}.recal_data.table

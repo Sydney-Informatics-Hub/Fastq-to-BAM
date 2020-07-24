@@ -1,16 +1,39 @@
 #!/bin/bash
 
-# Create input list for merging parallel alignment output
-# Read sample info from <cohort>.config
-# Assumes all non-cancer samples are designated 'N' (normal)
-# or 'B' (blood), and are lower coverage. All other phenotype 
-# IDs are assigned to 'tumour'. Splitting in this way is 
-# recommended when there is a binomial difference in coverage, 
-# eg 30X/60X cancer projects. For cohorts where the input data 
-# varies by a large degree and is not really binomial, the 
-# grouping can be done on file size (see 'merge_align_make_input_by_fastq_size.sh')
-# If no binomial grouping is desired, change group=true to group=false
-# Provide cohort name as argument
+#########################################################
+# 
+# Platform: NCI Gadi HPC
+# Description: make inputs file for parallel exectuion of merging
+# split BAM files per sample
+# Usage: bash merge_align_make_input.sh <cohort_name>
+# Details:
+# 	Create input list for merging parallel alignment output
+# 	Read sample info from <cohort>.config
+# 	Assumes all non-cancer samples are designated 'N' (normal)
+# 	or 'B' (blood), and are lower coverage. All other phenotype 
+# 	IDs are assigned to 'tumour'. Splitting in this way is 
+# 	recommended when there is a binomial difference in coverage, 
+# 	eg 30X/60X cancer projects. For cohorts where the input data 
+# 	varies by a large degree and is not really binomial, the 
+# 	grouping can be done on file size (see 'merge_align_make_input_by_fastq_size.sh')
+# 	If no binomial grouping is desired, change group=true to group=false
+# 	Provide cohort name as argument
+#
+# Author: Cali Willet
+# cali.willet@sydney.edu.au
+# Date last modified: 24/07/2020
+#
+# If you use this script towards a publication, please acknowledge the
+# Sydney Informatics Hub (or co-authorship, where appropriate).
+#
+# Suggested acknowledgement:
+# The authors acknowledge the scientific and technical assistance 
+# <or e.g. bioinformatics assistance of <PERSON>> of Sydney Informatics
+# Hub and resources and services from the National Computational 
+# Infrastructure (NCI), which is supported by the Australian Government
+# with access facilitated by the University of Sydney.
+# 
+#########################################################
 
 cohort=$1
 

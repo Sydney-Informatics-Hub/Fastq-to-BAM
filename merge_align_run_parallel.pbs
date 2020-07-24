@@ -1,16 +1,41 @@
 #!/bin/bash
-
-# Merge the chunked bam files for each sample into one bam
-# It's recommended to batch the samples by size, eg for cancer 30X/60X projects,
-# run one merge job for tumour allowing 48 CPU of RAM and 24 CPU of threads (1 node per
-# sample), and one job for tumour at 24 CPU of RAM and threads (1/2 nodes per sample)
-# If all samples are to be processed in one job and exceed 30X, do 1 node per sample,
-# and expect lower CPU efficiency and higher SU cost per sample if there is large range of 
-# input size. Do 1/2 node per sample if all samples < 30X
-# If running single samples, a single tumour sample is ideally suited to use 36 CPU worth of RAM
-# and 24 sambamba threads, however this setting is not possible for a parallel job so we instead
-# use 48 CPU worth of RAM. 
-# For running mutliple batches, use sed to edit eg sed -i 's/-tumour/-normal/g' 
+#########################################################
+# 
+# Platform: NCI Gadi HPC
+# Description: Merge the chunked bam files for each sample into one bam
+# Usage: first, run 'bash merge_align_make_input.sh <cohort_name>', 
+# then execute this script with 'qsub merge_align_run_parallel.pbs'
+# Details:
+# 	It's recommended to batch the samples by size, eg for cancer 
+#	30X/60X projects, run one merge job for tumour allowing 48 CPU
+#	of RAM and 24 CPU of threads (1 node per sample), and one job 
+#	for tumour at 24 CPU of RAM and threads (1/2 nodes per sample)
+# 	If all samples are to be processed in one job and exceed 30X, 
+#	do 1 node per sample, and expect lower CPU efficiency and 
+#	higher SU cost per sample if there is large range of input size. 
+#	Do 1/2 node per sample if all samples < 30X. If running single 
+#	samples, a single tumour sample is ideally suited to use 36 CPU 
+#	worth of RAM and 24 sambamba threads, however this setting is 
+#	not possible for a parallel job so we instead use 48 CPU worth 
+#	of RAM. This job is perfecty suited to the Broadwell nodes, 
+#	which are not yet online. For running mutliple batches, use 
+#	sed to edit the PBS between runs, eg sed -i 's/-tumour/-normal/g' 
+#
+# Author: Cali Willet
+# cali.willet@sydney.edu.au
+# Date last modified: 24/07/2020
+#
+# If you use this script towards a publication, please acknowledge the
+# Sydney Informatics Hub (or co-authorship, where appropriate).
+#
+# Suggested acknowledgement:
+# The authors acknowledge the scientific and technical assistance 
+# <or e.g. bioinformatics assistance of <PERSON>> of Sydney Informatics
+# Hub and resources and services from the National Computational 
+# Infrastructure (NCI), which is supported by the Australian Government
+# with access facilitated by the University of Sydney.
+# 
+#########################################################  
 
 #PBS -P <project>
 #PBS -N MA-tumour

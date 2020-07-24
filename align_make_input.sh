@@ -1,19 +1,41 @@
 #!/bin/bash
 
-# Create input list for parallel alignment with BWAkit
-# Read sample info from <cohort>.config
-# Unsplit fastq in Fastq directory, split fastq in Fastq_split
-# Assumes flowcell ID is field 3 of ':' delim read ID
-# Assumes flowcell lane number is field 4 of ':' delim read ID
-# Assumes platform is Illumina
-# Assumes library ID is either defined in samples.config, or 
-# that the default of '1' is aceptable
-# Assumes one library per sample - an example of 2 libraries 
-# per sample is hashed out within the while loop, where these samples
-# were given the value of '2' in the samples.config library field
-# and were assigned 1a and 1b libary values based on '_a_' and '_b_'
-# in their field name. 
-# Provide cohort name as argument
+#########################################################
+# 
+# Platform: NCI Gadi HPC
+# Description: make input file for parallel alignment of split fastq
+# Usage: bash align_make_input.pbs <cohort_name>
+# Details:
+# 	Read sample info from <cohort>.config.Provide cohort name as argument.
+# 	Unsplit fastq in Fastq directory, split fastq in Fastq_split
+# 	Assumes flowcell ID is field 3 of ':' delim read ID
+# 	Assumes flowcell lane number is field 4 of ':' delim read ID
+# 	Assumes platform is Illumina
+# 	Assumes library ID is either defined in samples.config, or 
+# 	that the default of '1' is aceptable
+# 	Assumes one library per sample - an example of 2 libraries 
+# 	per sample is hashed out within the while loop, where these samples
+# 	were given the value of '2' in the samples.config library field
+# 	and were assigned 1a and 1b libary values based on '_a_' and '_b_'
+# 	in their field name. After running, check that the inputs found 
+#	matches the number of split fastq pairs. Check the regexes in this
+#	script and the align.sh script.
+# Author: Cali Willet
+# cali.willet@sydney.edu.au
+# Date last modified: 24/07/2020
+#
+# If you use this script towards a publication, please acknowledge the
+# Sydney Informatics Hub (or co-authorship, where appropriate).
+#
+# Suggested acknowledgement:
+# The authors acknowledge the scientific and technical assistance 
+# <or e.g. bioinformatics assistance of <PERSON>> of Sydney Informatics
+# Hub and resources and services from the National Computational 
+# Infrastructure (NCI), which is supported by the Australian Government
+# with access facilitated by the University of Sydney.
+# 
+#########################################################
+
 
 cohort=$1
 

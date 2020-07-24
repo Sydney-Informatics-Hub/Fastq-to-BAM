@@ -1,13 +1,11 @@
-#!/bin/bash 
+#!/bin/bash
 
 #########################################################
 # 
 # Platform: NCI Gadi HPC
-# Description: Split each fastq pair into 2,000,000 lines 
-# (500,000 reads) with fastp, executed in parallel
-# Usage: this script is executed by split_fastq_run_parallel.pbs
-# Details:
-# 	Check that the regex at 'ls' matches your data. Edit as required.
+# Description: create BAM lists for merging recalibrated split 
+# BAM files with GATK GatherBamFiles
+# Usage: bash bqsr_merge_make_bamLists.sh <cohort_name>
 # Author: Cali Willet
 # cali.willet@sydney.edu.au
 # Date last modified: 24/07/2020
@@ -24,22 +22,21 @@
 # 
 #########################################################
 
-fastp=/scratch/<project>/apps/fastp #or replace with module load if appropriate
+cohort=$1
 
-fqpair=`echo $1 | cut -d ',' -f 1`
-file=$(basename $fqpair)
-NCPUS=`echo $1 | cut -d ',' -f 2`
+mkdir -p ./Inputs/BQSR_merge_lists
 
-fq1=$(ls ${fqpair}*R1.f*q.gz) #Must check regex for each batch.
-fq2=$(ls ${fqpair}*R2.f*q.gz) 
+samples=$(awk 'NR > 1 {print $2}' samples.config)
+samples=($samples)
 
-log=./Logs/Fastp/${file}.log
-
-$fastp -i ${fq1} \
-	-I ${fq2} \
-	-AGQL \
-	-w $NCPUS \
-	-S 2000000 \
-	-d 0 \
-	--out1 Fastq_split/${file}_R1.fastq.gz \
-	--out2 Fastq_split/${file}_R2.fastq.gz 2>${log}
+for (( s = 0; s < ${#samples[@]}; s++ ))
+do
+	labSampleID=${samples[$s]}
+	list=./Inputs/BQSR_merge_lists/${labSampleID}.list
+	\rm -rf $list
+	for (( i = 0; i < 3366; i++ ))
+	do 
+		printf "BQSR_apply/${labSampleID}.${i}.recal.bam\n" >> $list		
+	done
+	printf "BQSR_apply/${labSampleID}.unmapped.recal.bam\n" >> $list
+done

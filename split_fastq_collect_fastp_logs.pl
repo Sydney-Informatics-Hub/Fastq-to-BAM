@@ -1,7 +1,29 @@
 #!/usr/bin/env perl
 
-# Run as perl split_fastq_collect_fastp_logs.pl <cohort> 
-# If no cohort name specified, default output name is fastp_summary.txt
+#########################################################
+# 
+# Platform: NCI Gadi HPC
+# Description: summarise fastp logs into a TSV file after running 'split fastq'
+# Usage: perl split_fastq_collect_fastp_logs.pl <cohort_name>
+# Details:
+#	If no cohort name specified, default output name is fastp_summary.txt
+#	Output will be in ./Logs/Fastp
+# Author: Cali Willet
+# cali.willet@sydney.edu.au
+# Date last modified: 24/07/2020
+#
+# If you use this script towards a publication, please acknowledge the
+# Sydney Informatics Hub (or co-authorship, where appropriate).
+#
+# Suggested acknowledgement:
+# The authors acknowledge the scientific and technical assistance 
+# <or e.g. bioinformatics assistance of <PERSON>> of Sydney Informatics
+# Hub and resources and services from the National Computational 
+# Infrastructure (NCI), which is supported by the Australian Government
+# with access facilitated by the University of Sydney.
+# 
+#########################################################
+
 
 use warnings;
 use strict; 

@@ -1,7 +1,32 @@
 #!/bin/bash
 
-# Expected ratio of merged unsorted BAM to sorted BAM is ~ 0.55 (sorted BAM smaller than unsorted)
-# Supply cohort name as first positional argument to bash if desired
+#########################################################
+# 
+# Platform: NCI Gadi HPC
+# Description: check the output BAM size is as expected after 
+# sorting and duplicate read marking
+# Usage: bash dedup_sort_check_sorted_bam_sizes.sh <cohort_name>
+# Details:
+#	Expected ratio of merged unsorted BAM to sorted BAM is ~ 0.55 
+#	(sorted BAM smaller than unsorted). Supply cohort name as 
+#	first positional argument to bash if desired. Output will be
+# 	in ./Logs/Dedup_sort
+#
+# Author: Cali Willet
+# cali.willet@sydney.edu.au
+# Date last modified: 24/07/2020
+#
+# If you use this script towards a publication, please acknowledge the
+# Sydney Informatics Hub (or co-authorship, where appropriate).
+#
+# Suggested acknowledgement:
+# The authors acknowledge the scientific and technical assistance 
+# <or e.g. bioinformatics assistance of <PERSON>> of Sydney Informatics
+# Hub and resources and services from the National Computational 
+# Infrastructure (NCI), which is supported by the Australian Government
+# with access facilitated by the University of Sydney.
+# 
+#########################################################
 
 cohort=$1 
 

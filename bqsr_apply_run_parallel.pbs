@@ -1,0 +1,98 @@
+#!/bin/bash
+
+#########################################################
+# 
+# Platform: NCI Gadi HPC
+# Description: run GATK ApplyBQSR over parallel tasks
+# Usage: first, run 'bash bqsr_apply_make_input.sh <cohort_name>', 
+# then execute this script with bqsr_apply_run_parallel.pbs
+# Details:
+# 	Number of tasks per sample = 3366 (hs38+alt contigs) + 
+#	unmapped = 3367 tasks. Issue is some are tiny and some are
+#	large (96% of the data occurs within the first 24 contigs) 
+#	so must request many less CPUs than the total number of tasks 
+#	to avoid poor efficiency. An alternative is to split the intervals
+# 	with GATK intervals tools using 'balancing without subdivision' 
+# 	which for this reference genome makes 13 intervals, however the 
+# 	efficiency is lower (and walltime longer) as the walltime is 
+# 	capped by chromosome 1, so many CPUs remain idle after completing 
+# 	their assigned task(s). Interval splitting to 96 intervals WITHOUT 
+#	balancing without subdivision will give the best efficiency and 
+#	walltime (allowing chr 1 to be spit, and homogenising the run times
+#	among tasks) however I have not been able to resove the issue of 
+#	repeated reads (not duplciate reads, 'repeated' reads) in the cases
+# 	where read pairs span an interval breakpoint. This remains a work
+#	in progress, so for now, we will use the natural split based on contig.
+# 	Job can be run as separate tumour/normal jobs, or as one job. The 
+#	contigs do take longer to print for tumour compared to normal re more 
+#	data to print, but the impact of input sample size on effiency is lower
+# 	than for other jobs, as there are many more tasks than CPUs for this 
+#	job and the walltime discrepancies among tasks are somewhat absorbed 
+#	by the large number of tasks. The walltime is capped by the time to 
+#	print chromosome 1, so the inputs are sorted by contig size so that the 
+#	largest contigs are processed first. The average time to print a contig 
+#	is ~1 minute (tumour 60X) and ~ 0.5 mins (30X normal), but the max is 
+#	~ 40 - 60 mins (chr 1) so the walltime should always be at least 1 hour 
+#	no matter how many nodes are requested. Requesting 2.5 nodes per sample 
+#	and 1.5 hours walltime is a reasonable estimate for most datasets. 
+# 	If normal 30X and tumour 60X are run as separate jobs, request 2.5 nodes 
+#	per tumour sample and 1.5 nodes per normal sample each for 1.5 hrs.
+#
+# Author: Cali Willet
+# cali.willet@sydney.edu.au
+# Date last modified: 24/07/2020
+#
+# If you use this script towards a publication, please acknowledge the
+# Sydney Informatics Hub (or co-authorship, where appropriate).
+#
+# Suggested acknowledgement:
+# The authors acknowledge the scientific and technical assistance 
+# <or e.g. bioinformatics assistance of <PERSON>> of Sydney Informatics
+# Hub and resources and services from the National Computational 
+# Infrastructure (NCI), which is supported by the Australian Government
+# with access facilitated by the University of Sydney.
+# 
+#########################################################  
+
+#PBS -P <project>
+#PBS -N bqsr-a
+#PBS -l walltime=01:30:00
+#PBS -l ncpus=2640
+#PBS -l mem=10450GB
+#PBS -W umask=022
+#PBS -q normal
+#PBS -l wd
+#PBS -o ./Logs/bqsr_apply.o 
+#PBS -e ./Logs/bqsr_apply.e 
+#PBS -lstorage=scratch/<project>
+
+
+module load openmpi/4.0.2
+module load nci-parallel/1.0.0
+
+set -e
+
+SCRIPT=./bqsr_apply.sh 
+INPUTS=./Inputs/bqsr_apply.inputs
+
+mkdir -p BQSR_apply ./Logs/BQSR_apply ./Error_capture/BQSR_apply
+
+
+NCPUS=2 #single threaded, but needed for mem
+
+
+#########################################################
+# Do not edit below this line (unless running on a node that 
+# does not have 48 CPU, in which case edit the value of 'CPN'
+#########################################################
+
+CPN=48 #CPUs per node 
+M=$(( CPN / NCPUS )) #tasks per node
+
+sed "s|^|${SCRIPT} |" ${INPUTS} > ${PBS_JOBFS}/input-file
+
+mpirun --np $((M * PBS_NCPUS / 48)) \
+        --map-by node:PE=${NCPUS} \
+        nci-parallel \
+        --verbose \
+        --input-file ${PBS_JOBFS}/input-file

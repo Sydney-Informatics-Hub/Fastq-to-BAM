@@ -1,13 +1,16 @@
-#!/bin/bash 
+#!/bin/bash
 
 #########################################################
 # 
 # Platform: NCI Gadi HPC
-# Description: Split each fastq pair into 2,000,000 lines 
-# (500,000 reads) with fastp, executed in parallel
-# Usage: this script is executed by split_fastq_run_parallel.pbs
+# Description: make inputs file for parallel or serial exectuion of 
+# GATK GatherBQSRReports
+# Usage: bash bqsr_gather_make_input.sh <cohort_name>
 # Details:
-# 	Check that the regex at 'ls' matches your data. Edit as required.
+#	Create sample list for gathering chunked BQSR recal tables 
+#	to one recal table per sample. Provide cohort name as argument. 
+#	Sample info is read from <cohort>.config
+#
 # Author: Cali Willet
 # cali.willet@sydney.edu.au
 # Date last modified: 24/07/2020
@@ -24,22 +27,13 @@
 # 
 #########################################################
 
-fastp=/scratch/<project>/apps/fastp #or replace with module load if appropriate
+cohort=$1
 
-fqpair=`echo $1 | cut -d ',' -f 1`
-file=$(basename $fqpair)
-NCPUS=`echo $1 | cut -d ',' -f 2`
+input=./Inputs/bqsr_gather.inputs
 
-fq1=$(ls ${fqpair}*R1.f*q.gz) #Must check regex for each batch.
-fq2=$(ls ${fqpair}*R2.f*q.gz) 
+rm -f $input
 
-log=./Logs/Fastp/${file}.log
-
-$fastp -i ${fq1} \
-	-I ${fq2} \
-	-AGQL \
-	-w $NCPUS \
-	-S 2000000 \
-	-d 0 \
-	--out1 Fastq_split/${file}_R1.fastq.gz \
-	--out2 Fastq_split/${file}_R2.fastq.gz 2>${log}
+awk 'NR>1 {print $2}' ${cohort}.config > ${input}					
+tasks=`wc -l < $input`
+printf "Number of BQSR gather tasks to run: ${tasks}\n"
+	

@@ -1,0 +1,87 @@
+#!/bin/bash
+
+#########################################################
+# 
+# Platform: NCI Gadi HPC
+# Description: merge recalibrated split BAM files into one final BAM
+# 	with GATK GatherBamFiles
+# per sample, parallelising tasks by sample
+# Usage: first, run 'bash bqsr_merge_make_input.sh <cohort_name>'
+# 	then run 'bash bqsr_merge_make_bamLists.sh <cohort_name>'
+# 	then run this script with 'qsub bqsr_merge_run_parallel.pbs'
+# Details:
+# 	Each sample has 3367 recalibrated BAM files to be merged into one 
+# 	final BAM per sample. Process blood and tumour as separate jobs 
+#	due to ~ double walltime requirement for tumour. This step can 
+#	be performed with GATK GatherBamFiles (this script) or SAMbamba 
+#	merge (see bqsr_merge_SAMbamba_run_parallel.pbs). GATK is slower 
+#	but costs less SUs. SAMbamba is faster but uses more SUs. For GATK, 
+#	choose between normal or hugemem queues. The rumtime will be the 
+#	same, but the SU cost is lower on hugemem (approximately half). You 
+#	might choose to use normal queue if hugemem is heavily utilised 
+#	(more scarce resource). Allow 3 CPU and 12 GB per sample on normal 
+#	nodes, or 1 CPU and 32 GB per sample on hugemem nodes. Edit the java 
+#	heap space request in bqsr_merge_GATK.sh at the 'jvm' variable - 10 
+#	for normal nodes, 28 for hugemem nodes. I have not tested whether 
+#	this increase in mem yeilds a faster run time (I tested 1 CPU and 
+#	12 GB MEM/10G jvm on hugemem) but since the 32 GB per CPU is at no 
+#	extra SU cost, may as well request it. Be sure to set the correct 
+#	value for the NCPUS variable below, eg NCPUS=1 for hugemem or NCPUS=3
+#	 for normal queue
+# Author: Cali Willet
+# cali.willet@sydney.edu.au
+# Date last modified: 24/07/2020
+#
+# If you use this script towards a publication, please acknowledge the
+# Sydney Informatics Hub (or co-authorship, where appropriate).
+#
+# Suggested acknowledgement:
+# The authors acknowledge the scientific and technical assistance 
+# <or e.g. bioinformatics assistance of <PERSON>> of Sydney Informatics
+# Hub and resources and services from the National Computational 
+# Infrastructure (NCI), which is supported by the Australian Government
+# with access facilitated by the University of Sydney.
+# 
+#########################################################
+
+#PBS -P <project>
+#PBS -N bqsr-m-tumour
+#PBS -l walltime=02:00:00
+#PBS -l ncpus=16
+#PBS -l mem=512GB
+#PBS -W umask=022
+#PBS -q hugemem
+#PBS -l wd
+#PBS -o ./Logs/bqsr_merge-tumour.o
+#PBS -e ./Logs/bqsr_merge-tumour.e
+#PBS -lstorage=scratch/<project>
+
+module load openmpi/4.0.2
+module load nci-parallel/1.0.0
+
+
+set -e
+
+SCRIPT=./bqsr_merge_GATK.sh 
+INPUTS=./Inputs/bqsr_merge.input-tumour  
+
+NCPUS=1 # NCPUS per task. Needs 3 CPU worth of mem per task on normal nodes, and 1 CPU worth of mem per task on hugemem nodes
+
+mkdir -p ./Final_bams ./Logs/BQSR_merge B./Error_capture/BQSR_merge
+
+
+#########################################################
+# Do not edit below this line (unless running on a node that 
+# does not have 48 CPU, in which case edit the value of 'CPN'
+#########################################################
+
+CPN=48 #CPUs per node 
+M=$(( CPN / NCPUS )) #tasks per node
+
+sed "s|^|${SCRIPT} |" ${INPUTS} > ${PBS_JOBFS}/input-file
+
+mpirun --np $((M * PBS_NCPUS / 48)) \
+        --map-by node:PE=${NCPUS} \
+        nci-parallel \
+        --verbose \
+        --input-file ${PBS_JOBFS}/input-file

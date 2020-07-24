@@ -1,12 +1,34 @@
 #!/bin/bash
 
-# Index the dedup/sort bam file
-# Running index as a separate job re high charge rate for dedup/sort job
-# Expected run time at 24 CPU  ~ 3 mins for 30X and ~ 6.5 mins for 60X
-# So it's OK to run this job as one (instead of splitting by normal vs tumour)
-# or on express queue if queue times are long
-
-
+#########################################################
+# 
+# Platform: NCI Gadi HPC
+# Description: index dup-marked and sorted BAM files parallel by sample
+# Usage: first, run 'bash index_make_input.sh <cohort_name>', 
+# then execute this script with 'qsub index_run_parallel.pbs'
+# Details:
+# 	Running index as a separate job re high charge rate for 
+#	dedup/sort job. Expected run time at 24 CPU  ~ 3 mins 
+#	for 30X and ~ 6.5 mins for 60X so it's fair to run this job 
+#	as one (instead of splitting by normal vs tumour) or on 
+#	express queue if queue times are long
+#
+# Author: Cali Willet
+# cali.willet@sydney.edu.au
+# Date last modified: 24/07/2020
+#
+# If you use this script towards a publication, please acknowledge the
+# Sydney Informatics Hub (or co-authorship, where appropriate).
+#
+# Suggested acknowledgement:
+# The authors acknowledge the scientific and technical assistance 
+# <or e.g. bioinformatics assistance of <PERSON>> of Sydney Informatics
+# Hub and resources and services from the National Computational 
+# Infrastructure (NCI), which is supported by the Australian Government
+# with access facilitated by the University of Sydney.
+# 
+######################################################### 
+ 
 #PBS -P <project>
 #PBS -N index
 #PBS -l walltime=00:20:00

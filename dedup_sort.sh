@@ -1,11 +1,32 @@
 #!/bin/bash
 
-# Mark duplicates and create split and disc files with samblaster
-# Sort with samtools
-# This task is optimally suited to Broadwell nodes, which are not online
-# for Gadi yet. Much benchmarking of one TN pair found
-# the best config on Gadi normal nodes is 48 CPU (for the RAM), 24 CPU
-# for samtools sort, 4 GB RAM per sort thread, 12 CPU view. 
+#########################################################
+# 
+# Platform: NCI Gadi HPC
+# Description: sort by coordiante with SAMtools and mark 
+# duplicates with SAMblaster
+# Usage: this script is executed by bqsr_recal_run_parallel.pbs
+# Details:
+#	A private temp dir is created per sample for sorting,
+#	on /scratch. Testing found significant improvements
+#	in performance when using scratch compared to jobfs,
+#	and for using a private sort dir compared to relying
+#	on the SAMtools '-T prefix' flag
+# Author: Cali Willet
+# cali.willet@sydney.edu.au
+# Date last modified: 24/07/2020
+#
+# If you use this script towards a publication, please acknowledge the
+# Sydney Informatics Hub (or co-authorship, where appropriate).
+#
+# Suggested acknowledgement:
+# The authors acknowledge the scientific and technical assistance 
+# <or e.g. bioinformatics assistance of <PERSON>> of Sydney Informatics
+# Hub and resources and services from the National Computational 
+# Infrastructure (NCI), which is supported by the Australian Government
+# with access facilitated by the University of Sydney.
+# 
+#########################################################
 
 
 module load samtools/1.10
