@@ -48,7 +48,7 @@ gatk GatherBamFiles \
 	-I BQSR_merge_lists/${labSampleID}.list \
 	-O $bam_out \
 	-R $ref \
-	--CREATE_INDEX=true 
+	--CREATE_INDEX=true >> $log 2>&1
 		
 	#\
 	#--CREATE_MD5_FILE=true #Do not create md5 in this job, as it will cost 3x SU

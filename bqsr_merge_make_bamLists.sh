@@ -6,6 +6,10 @@
 # Description: create BAM lists for merging recalibrated split 
 # BAM files with GATK GatherBamFiles
 # Usage: bash bqsr_merge_make_bamLists.sh <cohort_name>
+# Details: GATK requires an ordered list of BAMs to merge. The 
+#	inputs are 3,366 recalibrated contig BAMs labelled as
+#	0 - 3365, and a recalobrated BAM with f12 unmapped read
+#	pairs labelled as number 3366.
 # Author: Cali Willet
 # cali.willet@sydney.edu.au
 # Date last modified: 24/07/2020
@@ -34,9 +38,8 @@ do
 	labSampleID=${samples[$s]}
 	list=./Inputs/BQSR_merge_lists/${labSampleID}.list
 	\rm -rf $list
-	for (( i = 0; i < 3366; i++ ))
+	for (( i = 0; i <= 3366; i++ ))
 	do 
 		printf "BQSR_apply/${labSampleID}.${i}.recal.bam\n" >> $list		
 	done
-	printf "BQSR_apply/${labSampleID}.unmapped.recal.bam\n" >> $list
 done
