@@ -48,7 +48,7 @@ where the 'SampleID' is the unique identifier enabling one to recognise which fa
 
 Each stage has (at least) 3 scripts: a 'make_input.sh', a 'run_parallel.sh' and a '.sh'. The make input script is to be run first, then the run parallel script submits parallel instances of the .sh task script. Some stages have additional steps, eg collecting logs (split_fastq and dedup_sort), checking outputs (split_fastq, merge_align, dedup_sort) and bqsr_merge_GATK (bqsr_merge_make_bamLists.sh).
 
-The reformatting script 'cat_HLA' can be run at any time after successful alignment. The reformatting script 'reformat_split_disc' can be run at any time after successful dedup_sort.
+The reformatting script 'cat_HLA' can be run at any time after successful alignment. The reformatting script 'reformat_split_disc' can be run at any time after successful dedup_sort. The 'bam_metrics' script is to be run after the final BAMs are completed with 'bqsr_merge'. 
 
 Error checking for each job MUST include:
 	a) Checking the 'error capture' directory for each job. Should be empty.
