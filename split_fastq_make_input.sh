@@ -34,6 +34,8 @@
 
 inputs=./Inputs/split_fastq.inputs
 
+mkdir -p ./Inputs
+
 rm -f $inputs
 
 ls ./Fastq/*.f*q.gz | sed 's/_R1.*\|_R2.*\|_R1_*\|_R2_*\|.R1.*\|.R2.*//' | uniq > $inputs

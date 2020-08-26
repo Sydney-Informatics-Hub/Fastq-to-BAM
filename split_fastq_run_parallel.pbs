@@ -17,7 +17,7 @@
 #	take ~ 40 mins to split.
 # Author: Cali Willet
 # cali.willet@sydney.edu.au
-# Date last modified: 24/07/2020
+# Date last modified: 26/08/2020
 #
 # If you use this script towards a publication, please acknowledge the
 # Sydney Informatics Hub (or co-authorship, where appropriate).
@@ -50,11 +50,9 @@ module load nci-parallel/1.0.0
 SCRIPT=./split_fastq.sh
 INPUTS=./Inputs/split_fastq.inputs   
 
-NCPUS=4 #cpus per parallel task. This can be increased, but 4 is optimal E
-sed -i "s/$/,$NCPUS/" $INPUTS 
+NCPUS=4 #cpus per parallel task. This can be increased, but 4 is optimal E 
 
-mkdir -p Fastq_split
-mkdir -p Fastp_logs
+mkdir -p ./Fastq_split ./Logs/Fastp
 
 
 

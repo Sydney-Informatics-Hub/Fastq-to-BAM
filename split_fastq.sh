@@ -10,7 +10,7 @@
 # 	Check that the regex at 'ls' matches your data. Edit as required.
 # Author: Cali Willet
 # cali.willet@sydney.edu.au
-# Date last modified: 24/07/2020
+# Date last modified: 26/08/2020
 #
 # If you use this script towards a publication, please acknowledge the
 # Sydney Informatics Hub (or co-authorship, where appropriate).
@@ -24,11 +24,10 @@
 # 
 #########################################################
 
-fastp=/scratch/<project>/apps/fastp #or replace with module load if appropriate
+fastp=/scratch/<project>/apps/fastp/0.20.0/fastp #or replace with module load if appropriate
 
 fqpair=`echo $1 | cut -d ',' -f 1`
 file=$(basename $fqpair)
-NCPUS=`echo $1 | cut -d ',' -f 2`
 
 fq1=$(ls ${fqpair}*R1.f*q.gz) #Must check regex for each batch.
 fq2=$(ls ${fqpair}*R2.f*q.gz) 
