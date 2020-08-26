@@ -1,0 +1,31 @@
+#!/bin/bash
+
+# Index the reference genome
+
+
+#PBS -P <ref>
+#PBS -N index-ref
+#PBS -l walltime=02:00:00
+#PBS -l ncpus=1
+#PBS -l mem=4GB
+#PBS -q normal
+#PBS -W umask=022
+#PBS -l wd
+#PBS -o ./Logs/index_ref.o
+#PBS -e ./Logs/index_ref.e
+#PBS -lstorage=scratch/er01
+
+
+module load bwa/0.7.17
+module load samtools/1.10
+module load gatk/4.1.2.0
+module load python3/3.7.4
+
+ref=./Reference/<ref>
+
+bwa index -a bwtsw ${ref}.fasta 
+
+samtools faidx ${ref}.fasta
+ 
+gatk CreateSequenceDictionary -R ${ref}.fasta -O ${ref}.dict
+
