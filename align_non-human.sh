@@ -10,7 +10,6 @@
 # 	Parallel alignment of  split fastq pairs with BWA mem
 # 	Output is read name sorted for compatibility with sambmaba merge
 # 	Check that the regex at 'ls' matches your data, edit as required.
-#	Install/edit paths to seqtk and bwa-postalt.js
 # Author: Cali Willet
 # cali.willet@sydney.edu.au
 # Date last modified: 26/08/2020
