@@ -12,7 +12,7 @@
 # 	Check that the regex at 'ls' matches your data, edit as required.
 # Author: Cali Willet
 # cali.willet@sydney.edu.au
-# Date last modified: 26/08/2020
+# Date last modified: 23/09/2020
 #
 # If you use this script towards a publication, please acknowledge the
 # Sydney Informatics Hub (or co-authorship, where appropriate).
@@ -29,14 +29,14 @@
 
 set -e
 
-ref=Reference/<ref>
+ref=<ref>
 
 module load samtools/1.10
 module load bwa/0.7.17
 
 fqpair=`echo $1 | cut -d ',' -f 1` 
-fq1=$(ls ${fqpair}*R1_*.f*q.gz) #Must check regex for each batch
-fq2=$(ls ${fqpair}*R2_*.f*q.gz)
+fq1=$(ls ${fqpair}*R1.f*q.gz) #Must check regex for each batch
+fq2=$(ls ${fqpair}*R2.f*q.gz)
 sampleID=`echo $1 | cut -d ',' -f 2`
 centre=`echo $1 | cut -d ',' -f 3`
 lib=`echo $1 | cut -d ',' -f 4`
@@ -49,10 +49,12 @@ bam_out=./Align_split/${outPrefix}.bam
 log=./Logs/BWA/${outPrefix}.log
 err=./Error_capture/Align_split/${outPrefix}.err
 
+rm -rf $log $err
+
 bwa mem \
         -M -t $NCPUS $ref \
         -R "@RG\tID:${flowcell}.${lane}_${sampleID}_${lib}\tPL:${platform}\tPU:${flowcell}.${lane}\tSM:${sampleID}\tLB:${sampleID}_${lib}\tCN:${centre}" \
-        $fq1 $fq2 2> $err \
+        $fq1 $fq2 2> $log \
         | samtools sort \
         -n -@ $NCPUS \
         -o $bam_out
@@ -63,7 +65,7 @@ then
 	printf "Corrupted or missing BAM\n" > $err  
 fi
 
-test=$(tail -1 ${log} | awk '$0~/^\[main\] Real time/') # This is correct for BWA version 0.7.15 and 0.7.17 - must check for new versions
+test=$(awk '$0~/^\[main\] Real time/' ${log}) # This is correct for BWA version 0.7.15 and 0.7.17 - must check for new versions
 if [[ ! $test ]]
 then 
         printf "Error in BWA log\n" >> ${err}

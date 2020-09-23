@@ -62,7 +62,6 @@ INPUTS=./Inputs/align.inputs-chunk1
 
 
 NCPUS=8 #cpus per parallel task
-sed -i "s/$/,$NCPUS/" $INPUTS 
 
 
 mkdir -p ./Align_split ./HLA_fastq ./Logs/BWA ./Error_capture ./Error_capture/Align_split

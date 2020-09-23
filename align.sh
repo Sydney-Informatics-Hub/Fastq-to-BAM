@@ -63,6 +63,7 @@ hla_out=./HLA_fastq/${outPrefix}
 log=./Logs/BWA/${outPrefix}.log.bwamem
 err=./Error_capture/Align_split/${outPrefix}.err
 
+rm -rf $log $err $bam_out $hla_out
 
 #bwakit emits default sort order (queryname, but no SO tag in headers) or option to sort 
 #by coordinate with samtools but does not allow the -n flag to specify sort order by name.
@@ -83,7 +84,7 @@ then
 	printf "Corrupted or missing BAM\n" > $err  
 fi
 
-test=$(tail -1 ${log} | awk '$0~/^\[main\] Real time/') # This is correct for BWA version 0.7.15 and 0.7.17 - must check for new versions
+test=$(awk '$0~/^\[main\] Real time/' ${log}) # This is correct for BWA version 0.7.15 and 0.7.17 - must check for new versions
 if [[ ! $test ]]
 then 
         printf "Error in BWA log\n" >> ${err}

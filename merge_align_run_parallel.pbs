@@ -59,9 +59,8 @@ INPUTS=./Inputs/merge_align.inputs-tumour
 
 
 NCPUS=24 # number of threads to sambamba - leave at 24
-sed -i "s/$/,$NCPUS/" $INPUTS 
 
-NCPUS=48 # CPUs per parallel task. At NCPUS=48, PBS to assign only one job per node (tumour), but run sambamba on 24 CPU. For samples < 30X (eg 'tumour' samples) hash this out
+NCPUS=48 # CPUs per parallel task. At NCPUS=48, PBS to assign only one job per node (tumour), but run sambamba on 24 CPU. For samples < 30X (eg 'non-tumour' samples) hash this out
 
 
 mkdir -p ./Align_merged ./Error_capture/Align_merge ./Logs/Align_merge

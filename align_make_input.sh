@@ -58,7 +58,7 @@ do
 	fi
 	
 	#Find all fastq input pairs for $sample
-	fqpairs=$(ls ./Fastq/${sample}_*f*q.gz | sed  's/_R1.*\|_R2.*\|_R1_*\|_R2_*\|.R1.*\|.R2.*//' | sort | uniq) #check regex per batch
+	fqpairs=$(ls ./Fastq/${sample}*f*q.gz | sed  's/_R1.*\|_R2.*\|_R1_*\|_R2_*\|.R1.*\|.R2.*//' | sort | uniq) #check regex per batch
 	fqpairs=($fqpairs)
 	
 		
@@ -82,7 +82,7 @@ do
 		
 		#Print each of the split chunks with flowcell and lane info to inputs file:
 		set=$(basename ${fqpairs[i]})
-		splitpairs=$(ls Fastq_split/*${set}* | sed 's/_R1.*\|_R2.*\|_R1_*\|_R2_*\|.R1.*\|.R2.*//' | uniq)
+		splitpairs=$(ls Fastq_split/*[0-9].${set}* | sed 's/_R1.*\|_R2.*\|_R1_*\|_R2_*\|.R1.*\|.R2.*//' | uniq)
 				
 		splitpairs=($splitpairs)
 

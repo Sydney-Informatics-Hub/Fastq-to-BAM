@@ -44,7 +44,7 @@ bam_out=./Dedup_sort_${labSampleID}/${labSampleID}.coordSorted.dedup.bam #privat
 split_out=../SplitDisc/${labSampleID}.split.sam
 disc_out=../SplitDisc/${labSampleID}.disc.sam
 dup_log=${labSampleID}.dedup.log
-err=../Error_capture/Dedup_sort${labSampleID}.err
+err=../Error_capture/Dedup_sort/${labSampleID}.err
 
 \rm -rf $bam_out
 lfs setstripe -c 15 $bam_out
