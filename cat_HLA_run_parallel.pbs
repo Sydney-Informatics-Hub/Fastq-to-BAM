@@ -71,7 +71,7 @@ M=$(( CPN / NCPUS )) #tasks per node
 
 sed "s|^|${SCRIPT} |" ${INPUTS} > ${PBS_JOBFS}/input-file
 
-mpirun --np $((M * PBS_NCPUS / 48)) \
+mpirun --np $((M * PBS_NCPUS / CPN)) \
         --map-by node:PE=${NCPUS} \
         nci-parallel \
         --verbose \
