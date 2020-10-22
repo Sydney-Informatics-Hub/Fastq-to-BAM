@@ -56,8 +56,7 @@ sed -i "s/$/,$NCPUS/" $INPUTS
 
 
 #########################################################
-# Do not edit below this line (unless running on a node that 
-# does not have 48 CPU, in which case edit the value of 'CPN'
+# Do not edit below this line  
 #########################################################
 
 CPN=48 #CPUs per node 

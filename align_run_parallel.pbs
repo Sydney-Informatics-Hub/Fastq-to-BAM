@@ -68,8 +68,7 @@ mkdir -p ./Align_split ./HLA_fastq ./Logs/BWA ./Error_capture ./Error_capture/Al
 
 
 #########################################################
-# Do not edit below this line (unless running on a node that 
-# does not have 48 CPU, in which case edit the value of 'CPN'
+# Do not edit below this line  
 #########################################################
 
 CPN=48 #CPUs per node 

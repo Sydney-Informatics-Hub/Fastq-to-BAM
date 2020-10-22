@@ -74,8 +74,7 @@ mkdir -p ./Final_bams ./Logs/BQSR_merge B./Error_capture/BQSR_merge
 
 
 #########################################################
-# Do not edit below this line (unless running on a node that 
-# does not have 48 CPU, in which case edit the value of 'CPN'
+# Do not edit below this line  
 #########################################################
 
 CPN=48 #CPUs per node 
