@@ -90,9 +90,9 @@ do
 		do
 			if [ "$lib_diff" ]
 			then
-				printf "${splitpairs[c]},${labSampleID},${centre},${lib_diff},${platform},${flowcell},${lane}\n" >> align.input	
+				printf "${splitpairs[c]},${labSampleID},${centre},${lib_diff},${platform},${flowcell},${lane}\n" >> $inputs	
 			else
-				printf "${splitpairs[c]},${labSampleID},${centre},${lib},${platform},${flowcell},${lane}\n" >> align.input
+				printf "${splitpairs[c]},${labSampleID},${centre},${lib},${platform},${flowcell},${lane}\n" >> $inputs
 			fi	
 		done			
 	done			
