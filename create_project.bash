@@ -48,6 +48,10 @@ echo Making Logs directory
 mkdir -p Logs
 echo
 
+echo Making Inputs directory
+mkdir -p Inputs
+echo
+
 # Config file
 echo Enter your cohort name / the basename of your config file:
 read cohort
