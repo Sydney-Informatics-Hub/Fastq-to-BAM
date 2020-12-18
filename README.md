@@ -24,7 +24,7 @@ wget https://cloudstor.aarnet.edu.au/plus/s/0fN5X8tksH2PGso/download -O Referenc
 
 Verify the completeness of the download by checking md5sums.
 
-If you would like to use this pipeline with an alternate reference genome/species, you will need to prepare the required files (SAMtools index, GATK index, GATK split intervals for BQSR* and GATK split intervals  x 3200 for variant calling) as well as edit the scripts to the new reference name. *Split intervals for BQSR must be a minimum of 100 Mbp (eg for 3.2 Gbp hg38 + alt, this is 32 intervals). For ApplyBQSR adjust the number of contigs over which to print recalibrated BAMs. You will also need to source the known variants databases to be used for BQSR and VQSR and edit those scripts that use them accordingly. 
+If you would like to use this pipeline with an alternate reference genome/species, you will need to prepare the required files (SAMtools index, GATK index, GATK split intervals for BQSR* and GATK split intervals  x 3200 for variant calling) as well as edit the scripts to the new reference name. *Split intervals for BQSR must be a minimum of 100 Mbp (eg for 3.2 Gbp hg38 + alt, this is 32 intervals). For ApplyBQSR adjust the number of contigs over which to print recalibrated BAMs. You will also need to source the known variants databases to be used for BQSR and VQSR and edit those scripts that use them accordingly. If a known variants resource is not available for your genome, you can bootstrap one from your data following this pipeline https://github.com/Sydney-Informatics-Hub/bioinformatics
 
 # Overview of steps
 
