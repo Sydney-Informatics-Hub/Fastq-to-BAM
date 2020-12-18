@@ -28,17 +28,21 @@ If you would like to use this pipeline with an alternate reference genome/specie
 
 # Overview of steps
 
-0) make <cohort_name>.config
-1) download, unpack and checksum the Reference
-2) split_fastq
-3) align
-4) merge_align
-5) dedup_sort
-6) index
-7) bqsr_recal
-8) bqsr_gather
-9) bqsr_apply
-10) bqsr_merge
+1) make <cohort_name>.config
+2) download, unpack and checksum the Reference
+3) clone these scripts. I recommend renaming the directory to eg 'Scripts'.
+4) run create_project.bash and follow the prompts. Run this (and all scripts) from the base working directory
+5) fastQC
+6) split_fastq 
+7) split_fastq_check
+8) align
+9) merge_align
+10) dedup_sort
+11) index
+12) bqsr_recal
+13) bqsr_gather
+14) bqsr_apply
+15) bqsr_merge (creates final BAMs)
 
 <cohort_name>.config MUST match the following format:
 
