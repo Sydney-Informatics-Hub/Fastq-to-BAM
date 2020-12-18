@@ -1,0 +1,68 @@
+#!/bin/bash
+
+#########################################################
+# 
+# Platform: NCI Gadi HPC
+# Description: check fastq data via fastp and fastqc ouput 
+# 	Run singleton files with a different script
+#	Use split_fastq.inputs
+# Author: Cali Willet
+# cali.willet@sydney.edu.au
+# Date last modified: 16/12/2020
+#
+# If you use this script towards a publication, please acknowledge the
+# Sydney Informatics Hub (or co-authorship, where appropriate).
+#
+# Suggested acknowledgement:
+# The authors acknowledge the scientific and technical assistance 
+# <or e.g. bioinformatics assistance of <PERSON>> of Sydney Informatics
+# Hub and resources and services from the National Computational 
+# Infrastructure (NCI), which is supported by the Australian Government
+# with access facilitated by the University of Sydney.
+# 
+#########################################################
+
+
+#PBS -P er01
+#PBS -N check_fq
+#PBS -l walltime=00:45:00
+#PBS -l ncpus=1440
+#PBS -l mem=5730GB
+#PBS -q normal
+#PBS -W umask=022
+#PBS -l wd
+#PBS -o ./Logs/check_split_fastq.o
+#PBS -e ./Logs/check_split_fastq.e
+#PBS -lstorage=scratch/er01
+
+module load openmpi/4.0.2
+module load nci-parallel/1.0.0
+
+module load parallel/20191022
+
+# For singleton data:
+#SCRIPT=./Scripts/split_fastq_singletons.sh
+#INPUTS=./Inputs/split_fastq.inputs-unpaired 
+
+SCRIPT=./Scripts/split_fastq_check_fastq_input_vs_split_output.sh
+INPUTS=./Inputs/split_fastq.inputs  
+
+NCPUS=24 #cpus per parallel task. 
+
+mkdir -p ./Check_fastq_split
+
+
+#########################################################
+# Do not edit below this line  
+#########################################################
+
+if [[ $PBS_QUEUE =~ bw-exec ]]; then CPN=28; else CPN=48; fi
+M=$(( CPN / NCPUS )) #tasks per node
+
+sed "s|^|${SCRIPT} |" ${INPUTS} > ${PBS_JOBFS}/input-file
+
+mpirun --np $((M * PBS_NCPUS / CPN)) \
+        --map-by node:PE=${NCPUS} \
+        nci-parallel \
+        --verbose \
+        --input-file ${PBS_JOBFS}/input-file
