@@ -60,7 +60,7 @@ mkdir -p ./Fastq_split ./Logs/Fastp
 # Do not edit below this line  
 #########################################################
 
-CPN=48 #CPUs per node 
+if [[ $PBS_QUEUE =~ bw-exec ]]; then CPN=28; else CPN=48; fi 
 M=$(( CPN / NCPUS )) #tasks per node
 
 sed "s|^|${SCRIPT} |" ${INPUTS} > ${PBS_JOBFS}/input-file
