@@ -44,7 +44,7 @@ log=./Logs/BQSR_apply/${labSampleID}.${counter}.log
 err=./Error_capture/BQSR_apply/${labSampleID}.${counter}.err
 
 gatk ApplyBQSR \
-	--java-options "-Xmx6G -Dsamjdk.compression_level=5" \
+	--java-options "-Xmx6G -Dsamjdk.compression_level=5 -DGATK_STACKTRACE_ON_USER_EXCEPTION=true" \
 	-R $ref \
 	-I $bam_in  \
 	--bqsr-recal-file $table \
@@ -62,7 +62,7 @@ then
 	printf "Error in GATK log ${log}\n" >> $err
 fi 	
 	
-if grep -q -i exception $log
+if grep -q Exception $log
 then 
 	printf "Exception in GATK log ${log}\n" >> $err
 fi 

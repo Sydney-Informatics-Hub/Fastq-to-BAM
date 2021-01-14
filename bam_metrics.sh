@@ -41,7 +41,7 @@ ref=./Reference/ARS-UCD1.2_Btau5.0.1Y.fa
 log=./Bam_metrics_logs/${sample}.log
 
 gatk  CollectMultipleMetrics \
-        --java-options "-Xmx120G " \
+        --java-options "-Xmx120G -DGATK_STACKTRACE_ON_USER_EXCEPTION=true" \
         -R $ref \
         -I $bam_in  \
         -O $out >> $log 2>&1

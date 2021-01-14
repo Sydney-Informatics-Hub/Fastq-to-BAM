@@ -44,7 +44,7 @@ lfs setstripe -c 15 $bam_out
 
 
 gatk GatherBamFiles \
-	--java-options "-Xmx${jvm}G" \
+	--java-options "-Xmx${jvm}G -DGATK_STACKTRACE_ON_USER_EXCEPTION=true" \
 	-I BQSR_merge_lists/${labSampleID}.list \
 	-O $bam_out \
 	-R $ref \
@@ -64,7 +64,7 @@ then
         printf "Error in GATK log ${log}\n" >> $err
 fi 
 
-if grep -q -i exception $log
+if grep -q Exception $log
 then 
         printf "Exception in GATK log ${log}\n" >> $err
 fi

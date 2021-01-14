@@ -38,7 +38,7 @@ gold_standard_indels=./Reference/Known_vars/Mills_and_1000G_gold_standard.indels
 dbsnp=./Reference/Known_vars/Homo_sapiens_assembly38.dbsnp138.vcf
 
 gatk BaseRecalibrator \
-	--java-options "-Xmx6G" \
+	--java-options "-Xmx6G -DGATK_STACKTRACE_ON_USER_EXCEPTION=true" \
 	-R $ref \
 	-L $interval \
 	-I $bam  \
@@ -53,7 +53,7 @@ then
         printf "Error in GATK log ${log}\n" >> $err
 fi 
 
-if grep -q -i exception $log
+if grep -q Exception $log
 then 
         printf "Exception in GATK log ${log}\n" >> $err
 fi
