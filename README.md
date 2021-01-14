@@ -58,7 +58,7 @@ Error checking for each job MUST include:
 	a) Checking the 'error capture' directory for each job. Should be empty.
 	b) Checking the .e PBS logs. All successful tasks should have '...exited with status 0' but not all '...exited with status 0' tasks are successful
 	c) Checking that the right number and size of outputs have been created
-	d) For tasks with check scripts (split_fastq, merge_align, dedup_sort) verify the TSV output mathces expectations
+	d) For tasks with check scripts (split_fastq, merge_align, dedup_sort) verify the TSV output matches expectations
 	
 # References
 
