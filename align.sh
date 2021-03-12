@@ -63,7 +63,7 @@ hla_out=./HLA_fastq/${outPrefix}
 log=./Logs/BWA/${outPrefix}.log.bwamem
 err=./Error_capture/Align_split/${outPrefix}.err
 
-rm -rf $log $err $bam_out $hla_out
+rm -rf $log $err ${bam_out}* $hla_out
 
 #bwakit emits default sort order (queryname, but no SO tag in headers) or option to sort 
 #by coordinate with samtools but does not allow the -n flag to specify sort order by name.
