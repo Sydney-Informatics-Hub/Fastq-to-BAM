@@ -1,0 +1,60 @@
+#!/bin/bash 
+
+##########################################################################
+#
+# Platform: NCI Gadi HPC
+# Usage: qsub split_fastq_run_parallel.pbs
+# Version: 2.0
+#
+# For more details see: https://github.com/Sydney-Informatics-Hub/Fastq-to-BAM
+#
+# If you use this script towards a publication, please acknowledge the
+# Sydney Informatics Hub (or co-authorship, where appropriate).
+#
+# Suggested acknowledgement:
+# The authors acknowledge the support provided by the Sydney Informatics Hub,
+# a Core Research Facility of the University of Sydney. This research/project
+# was undertaken with the assistance of resources and services from the National
+# Computational Infrastructure (NCI), which is supported by the Australian
+# Government, and the Australian BioCommons which is enabled by NCRIS via
+# Bioplatforms Australia funding.
+#
+##########################################################################
+
+#PBS -P 
+#PBS -N split_fastq
+#PBS -l walltime=00:00:00
+#PBS -l ncpus=
+#PBS -l mem=GB
+#PBS -q normal
+#PBS -W umask=022
+#PBS -l wd
+#PBS -o ./Logs/split_fastq.o
+#PBS -e ./Logs/split_fastq.e
+#PBS -l storage=
+
+INPUTS=./Inputs/split_fastq.inputs
+# NCPUS per task
+NCPUS=4
+
+mkdir -p ../Split_fastq ./Logs/split_fastq
+
+#########################################################
+# Do not edit below this line
+#########################################################
+
+module load nci-parallel/1.0.0
+module load fastp/0.20.0
+
+SCRIPT=./split_fastq.sh
+
+M=$(( PBS_NCI_NCPUS_PER_NODE / NCPUS )) #tasks per node
+
+sed "s|^|${SCRIPT} |" ${INPUTS} > ${PBS_JOBFS}/input-file
+
+mpirun --np $((M * PBS_NCPUS / PBS_NCI_NCPUS_PER_NODE)) \
+        --map-by node:PE=${NCPUS} \
+        nci-parallel \
+        --verbose \
+        --input-file ${PBS_JOBFS}/input-file
+

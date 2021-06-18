@@ -1,0 +1,81 @@
+#!/bin/bash 
+
+##########################################################################
+#
+# Platform: NCI Gadi HPC
+# Usage: qsub create_gatk_ref_intervals.pbs
+# Version: 2.0
+#
+# For more details see: https://github.com/Sydney-Informatics-Hub/Fastq-to-BAM
+#
+# If you use this script towards a publication, please acknowledge the
+# Sydney Informatics Hub (or co-authorship, where appropriate).
+#
+# Suggested acknowledgement:
+# The authors acknowledge the support provided by the Sydney Informatics Hub,
+# a Core Research Facility of the University of Sydney. This research/project
+# was undertaken with the assistance of resources and services from the National
+# Computational Infrastructure (NCI), which is supported by the Australian
+# Government, and the Australian BioCommons which is enabled by NCRIS via
+# Bioplatforms Australia funding.
+#
+##########################################################################
+
+#Create evenly sized intervals over which to parallelise BQSR and HC
+
+#PBS -P 
+#PBS -N ref-int
+#PBS -l walltime=00:30:00
+#PBS -l ncpus=1
+#PBS -l mem=4GB
+#PBS -q express
+#PBS -W umask=022
+#PBS -l wd
+#PBS -o ./Logs/gatk_ref_intervals.o
+#PBS -e ./Logs/gatk_ref_intervals.e
+#PBS -lstorage=
+
+module load gatk/4.1.8.1
+
+set -e
+
+ref=
+dict=
+
+# Determine number of intervals for BQSR based on genome size
+min=100000000 # min 100 Mb per interval for scattered BQSR table creation
+size=$(awk 'NR>1 {print $3}' ${dict} | cut -d ':' -f 2 | awk '{sum+=$1} END {print sum}')
+int=$(expr $size / $min)
+
+echo $ref has size $size bp \- splitting to $int intervals for BQSR
+
+gatk SplitIntervals \
+        --java-options "-Xmx3g" \
+        -R $ref \
+        -scatter-count ${int} \
+        -O ../Reference/BQSR_intervals
+
+# For BQSR apply (printing BAMs). Do not split intervals, as this leads
+# to replicate reads in the merged BAM. Number of intervals may be less
+# than $int, depending on contig configuration
+int=100
+
+gatk SplitIntervals \
+        --java-options "-Xmx3g" \
+        --subdivision-mode BALANCING_WITHOUT_INTERVAL_SUBDIVISION \
+        -R $ref \
+        -scatter-count ${int} \
+        -O ../Reference/BQSR_apply_intervals
+
+
+# Again for HC (e.g. 3200 for human)
+int= #desired interval number
+
+echo Splitting $int intervals for HaplotypeCaller
+
+gatk SplitIntervals \
+        --java-options "-Xmx3g" \
+        -R $ref \
+        -scatter-count ${int} \
+        -O ../Reference/HC_intervals
+

@@ -1,0 +1,68 @@
+#!/bin/bash
+
+##########################################################################
+#
+# Platform: NCI Gadi HPC
+# Usage: qsub merge_align_run_parallel.pbs
+# Version: 2.0
+#
+# For more details see: https://github.com/Sydney-Informatics-Hub/Fastq-to-BAM
+#
+# If you use this script towards a publication, please acknowledge the
+# Sydney Informatics Hub (or co-authorship, where appropriate).
+#
+# Suggested acknowledgement:
+# The authors acknowledge the support provided by the Sydney Informatics Hub,
+# a Core Research Facility of the University of Sydney. This research/project
+# was undertaken with the assistance of resources and services from the National
+# Computational Infrastructure (NCI), which is supported by the Australian
+# Government, and the Australian BioCommons which is enabled by NCRIS via
+# Bioplatforms Australia funding.
+#
+##########################################################################
+
+#PBS -P 
+#PBS -N merge_align
+#PBS -l walltime=00:00:00
+#PBS -l ncpus=
+#PBS -l mem=GB
+#PBS -q normalbw
+#PBS -W umask=022
+#PBS -l wd
+#PBS -o ./Logs/merge_align.o
+#PBS -e ./Logs/merge_align.e
+#PBS -l storage=
+
+set -e
+
+INPUTS=./Inputs/merge_align.inputs
+
+
+NCPUS=28 #normalbw
+#NCPUS=48 #reset for extra small samples - PBS to assign only one job per node, but run sambamba on 24 CPU
+
+mkdir -p ../Merge_align ./Logs/Merge_align_error_capture
+
+
+#########################################################
+# Do not edit below this line
+#########################################################
+
+module load openmpi/4.0.2
+module load nci-parallel/1.0.0
+module load sambamba/0.7.1
+module load samtools/1.10
+
+# SCRIPT
+SCRIPT=./merge_align.sh
+
+M=$(( PBS_NCI_NCPUS_PER_NODE / NCPUS )) #tasks per node
+
+sed "s|^|${SCRIPT} |" ${INPUTS} > ${PBS_JOBFS}/input-file
+
+mpirun --np $((M * PBS_NCPUS / PBS_NCI_NCPUS_PER_NODE)) \
+        --map-by node:PE=${NCPUS} \
+        nci-parallel \
+        --verbose \
+        --input-file ${PBS_JOBFS}/input-file
+

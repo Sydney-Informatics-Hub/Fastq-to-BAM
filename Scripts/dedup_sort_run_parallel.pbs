@@ -1,0 +1,65 @@
+#!/bin/bash
+
+##########################################################################
+#
+# Platform: NCI Gadi HPC
+# Usage: qsub dedup_sort_run_parallel.pbs
+# Version: 2.0
+#
+# For more details see: https://github.com/Sydney-Informatics-Hub/Fastq-to-BAM
+#
+# If you use this script towards a publication, please acknowledge the
+# Sydney Informatics Hub (or co-authorship, where appropriate).
+#
+# Suggested acknowledgement:
+# The authors acknowledge the support provided by the Sydney Informatics Hub,
+# a Core Research Facility of the University of Sydney. This research/project
+# was undertaken with the assistance of resources and services from the National
+# Computational Infrastructure (NCI), which is supported by the Australian
+# Government, and the Australian BioCommons which is enabled by NCRIS via
+# Bioplatforms Australia funding.
+#
+##########################################################################
+
+#PBS -P 
+#PBS -N Dedup_sort
+#PBS -l ncpus=
+#PBS -l mem=GB
+#PBS -l walltime=00:00:00
+#PBS -q normalbw
+#PBS -W umask=022
+#PBS -l wd
+#PBS -o ./Logs/dedup_sort.o
+#PBS -e ./Logs/dedup_sort.e
+#PBS -l storage=
+
+set -e
+
+INPUTS=./Inputs/dedup_sort.inputs
+NCPUS=28 #Private node per sample, needs all the RAM, but give samtools fewer threads
+SAMTOOLS_NCPUS=12
+
+mkdir -p ../Dedup_sort ../SplitDisc ./Logs/Dedup_sort ./Logs/Dedup_sort_error_capture
+
+#########################################################
+# Do not edit below this line
+#########################################################
+
+module load openmpi/4.0.2
+module load nci-parallel/1.0.0
+module load samtools/1.10
+samblaster=/scratch/er01/apps/samblaster/0.1.24/samblaster
+
+# SCRIPT
+SCRIPT=./dedup_sort.sh
+
+M=$(( PBS_NCI_NCPUS_PER_NODE / NCPUS )) #tasks per node
+
+sed "s|^|${SCRIPT} |" ${INPUTS} > ${PBS_JOBFS}/input-file
+
+mpirun --np $((M * PBS_NCPUS / PBS_NCI_NCPUS_PER_NODE)) \
+        --map-by node:PE=${NCPUS} \
+        nci-parallel \
+        --verbose \
+        --input-file ${PBS_JOBFS}/input-file
+
