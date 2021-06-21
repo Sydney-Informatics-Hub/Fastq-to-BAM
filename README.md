@@ -1,4 +1,4 @@
-# FASTQ-TO-BAM Draft User Guide
+# FASTQ-TO-BAM User Guide
 
 ## Description  
 
