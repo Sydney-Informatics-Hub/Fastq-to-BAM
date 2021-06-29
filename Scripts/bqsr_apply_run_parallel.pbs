@@ -27,7 +27,6 @@
 #PBS -l walltime=00:00:00
 #PBS -l ncpus=
 #PBS -l mem=GB
-#PBS -l jobfs=GB
 #PBS -W umask=022
 #PBS -q normal
 #PBS -l wd
@@ -41,9 +40,6 @@ INPUTS=./Inputs/bqsr_apply.inputs
 NCPUS=2 #single threaded, but needed for mem
 
 mkdir -p ../BQSR_apply ./Logs/BQSR_apply ./Logs/BQSR_apply_error_capture
-
-export APPLYBQSR_OUTDIR=${PBS_JOBFS}/BQSR_apply
-mkdir -p ${APPLYBQSR_OUTDIR}
 
 #########################################################
 # Do not edit below this line
