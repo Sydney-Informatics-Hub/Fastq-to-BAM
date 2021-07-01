@@ -47,7 +47,7 @@ git clone https://github.com/Sydney-Informatics-Hub/Fastq-to-BAM.git
 
 ### Software   
 
-All software required to run the fastq-to-bam pipeline are globally installed on Gadi: 
+All software required to run the fastq-to-bam pipeline include:
 
 * bwa/0.7.17
 * fastp/0.20.0
