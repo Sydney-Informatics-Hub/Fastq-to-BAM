@@ -2,7 +2,7 @@
 
 ## Description  
 
-This repository contains a genome alignment workflow that takes raw FASTQ files, aligns them to a reference genome and outputs analysis ready BAM files. This workflow is designed for the National Computational Infrastructure's (NCI) Gadi supercompter, leveraging multiple nodes on NCI Gadi to run all stages of the workflow in parallel, either massively parallel using the scatter-gather approach or parallel by sample. Parellelisation across the cluster was achieved with Open MPI v.4.0.2 [(Graham et al. 2005)](https://dl.acm.org/doi/10.1007/11752578_29), along with NCI's utility script nci-parallel v 1.0.0. It consists of a number of stages and follows the BORAD Institute's best practice recommendations. The stages of the pipeline are as follows:
+This repository contains a genome alignment workflow that takes raw FASTQ files, aligns them to a reference genome and outputs analysis ready BAM files. This workflow is designed for the National Computational Infrastructure's (NCI) Gadi supercompter, leveraging multiple nodes on NCI Gadi to run all stages of the workflow in parallel, either massively parallel using the scatter-gather approach or parallel by sample. Parellelisation across the cluster was achieved with Open MPI v.4.1.0 [(Graham et al. 2005)](https://dl.acm.org/doi/10.1007/11752578_29), along with NCI's utility script nci-parallel. It consists of a number of stages and follows the BORAD Institute's best practice recommendations. The stages of the pipeline are as follows:
 
 #### Step 1: Split FASTQ files 
 Paired FASTQ files are initially split into smaller files of approximately 500 K read pairs with fastp v.0.20.0 [(Chen et al. 2018)](https://academic.oup.com/bioinformatics/article/34/17/i884/5093234) for parallel alignment. Reads are then aligned to Hg38 + alt contigs as downloaded by bwakit v. 0.7.17 ‘run-gen-ref’. 
@@ -18,24 +18,6 @@ Base quality score recalibration is performed with GATK v 4.1.2.0 [(Van der Auwe
 
 <img src="https://user-images.githubusercontent.com/49257820/87630794-4e7ce680-c779-11ea-9b79-ff22fdb379af.png" width="100%" height="100%">  
 
-## Set up 
-
-To run this pipeline you will need to clone the GitHub repository, prepare your input files including a config file and reference assembly.  
-
-After completing set up, `Fastq-to-BAM` directory structure should resemble the following:
-
-```
-|-- Reference
-    |-- BQSR_intervals 
-    |-- BQSR_apply_intervals
-|-- Scripts 
-    |-- Inputs  
-    |-- Logs  
-|-- <cohort>.config
-|-- create_project.bash
-|-- Fastq
-```
-
 ### Installation 
 
 Clone the Fastq-to-bam repository: 
@@ -44,6 +26,7 @@ Clone the Fastq-to-bam repository:
 module load git
 git clone https://github.com/Sydney-Informatics-Hub/Fastq-to-BAM.git
 ```  
+NOTE: This pipeline is currently compatible with NCI Gadi only. 
 
 ### Software   
 
@@ -61,28 +44,43 @@ All software required to run the fastq-to-bam pipeline include:
 * samblaster/0.1.24
 * samtools/1.10
 
-### Inputs
+## Set up 
 
-The fastq-to-bam pipeline requires users supply the following inputs: 
-* A config file listing all samples  
-* Short read sequences in FASTQ format  
-* An indexed reference genome assembly in FASTA format  
+This pipeline has specific input and directory structure requirements. The set up instructions below will help you to achieve the required set up, which will resemble the following:
+
+```
+|-- Reference
+|-- Fastq-to-BAM 
+|-- <cohort>.config
+|-- create_project.bash
+|-- Fastq
+```
+We refer to this directory as the __base__ directory. The __working directory__(where you run scripts) is in Fastq-to-BAM.
+
+### Required inputs
+
+The Fastq-to-BAM pipeline requires users supply the following inputs: 
+* A `<cohort>.config` file listing all samples and required metadata in TSV file format
+* Short read sequences in FASTQ format (in a `Fastq` directory)  
+* An indexed reference genome assembly in FASTA format (in `Reference` directory)
 * A set of high-confidence variants in VCF format (if performing BQSR)  
+
+Please see the steps below for more details.
 
 #### 1. Prepare the config file 
 
 The config file must have the suffix '.config' (i.e. cohortname.config) and one row per sample, matching the format SampleID\tLabSampleID\tSeqCentre\tLibrary(default=1) where: 
 
-   - SampleID is the unique identifier enabling one to recognise which FASTQs belong to the same sample 
-   - LabSampleID is the desired name for the output files for that sample i.e. in-house ID 
-   - SeqCentre 
+   - SampleID is the unique identifier enabling one to recognise which FASTQs belong to the same sample (e.g., IDs provided by your sequencing company. This can often be the same as the LabSampleID)
+   - LabSampleID is the desired name for the output files for that sample i.e. in-house ID
+   - SeqCentre (where the samples were sequenced, this metadata will be stored in the final BAM files)
    - Library (default=1)  
 
-Save the config file to the base `Fastq-to-BAM` directory. 
+Save the config file to the base directory, as in [set up](#set-up).
      
 #### 2. Prepare the reference genome
 
-Provided with this pipeline is the (+ alt contigs) reference assembly. The complete set of Hg38 required files can be downloaded with the following commands, which should be submitted to Gadi's 'copyq':
+Provided with this pipeline is the (+ alt contigs) reference assembly. The complete set of Hg38 required files can be downloaded with the following commands to the base directory, as in [set up](#set-up):
 
 ```
 wget https://cloudstor.aarnet.edu.au/plus/s/CHeAuEsBkHalDvI/download -O Reference.tar.gz
@@ -95,9 +93,26 @@ Next, unpack the Reference tar file:
 tar -xvf Reference.gz.tar
 ````
 
-The `Reference` directory must be located within the main working directory for the cloned repository (or a symlink created), to ensure the relative paths that are used within the scripts are correct. 
-  
-If you would like to use this pipeline with a different reference genome, you will need to prepare the required files (SAMtools index, GATK index, GATK split intervals for BQSR and GATK split intervals for variant calling). Split intervals for BQSR must be a minimum of 100 Mbp (e.g. for 3.2 Gbp hg38 + alt, this is 32 intervals). For ApplyBQSR adjust the number of contigs over which to print recalibrated BAMs. You will also need to source the known variants databases to be used for BQSR and VQSR and edit those scripts that use them accordingly. We have provided a script to prepare reference intervals. Use it by editing and running: 
+The `Reference` directory must be located within the base directory to ensure the relative paths that are used within the scripts are correct. 
+ 
+__Non-human reference genomes__
+
+If you would like to use this pipeline with a different reference genome, you will need to:
+
+```
+mkdir -p Reference # in the base directory
+cd Reference
+# Copy or download your reference genome into Reference
+```
+
+Prepare the required index files 
+
+```
+# edit ref= to the name of your reference.fasta file
+qsub index_reference.pbs
+```
+
+Prepare split intervals for GATK scatter-gathering (this enables multi-node, embarassingly parallelism). GATK split intervals for BQSR and GATK split intervals for variant calling should be prepared. Split intervals for BQSR must be a minimum of 100 Mbp (e.g. for 3.2 Gbp hg38 + alt, this is 32 intervals). For ApplyBQSR adjust the number of contigs over which to print recalibrated BAMs. You will also need to source the known variants databases to be used for BQSR and VQSR and edit those scripts that use them accordingly. We have provided a script to prepare reference intervals. Use it by editing and running: 
    
 ```
 qsub create_gatk_ref_intervals.pbs
@@ -116,9 +131,9 @@ qsub create_gatk_ref_intervals.pbs
 
 ## Usage 
 
-Users will run a series of scripts for each stage of the fastq-to-bam pipeline. After the Create Project stage, each subsequent stage consists of a `make_input.sh` script which creates a list of input files and a `run_parallel.pbs` script which submits the `<task>.sh` in parallel to the PBS job scheduler. Some stages have additional 'checker' scripts that can be run to confirm the integrity of a process' output. Each stage is detailed below.
+Users will run a series of scripts for each stage of the Fastq-to-BAM pipeline. Run all scripts from the `Fastq-to-BAM` directory - this is your working directory. After completing [set up](#set-up), each subsequent stage consists of a `make_input.sh` script which creates a list of input files and a `run_parallel.pbs` script which submits the `<task>.sh` in parallel to the PBS job scheduler. Some stages have additional 'checker' scripts that can be run to confirm the integrity of a process' output. Each stage is detailed below.
    
-All scripts must be run from the `Scripts` directory. For how to calculate the resource requirements for each `_run_parallel.pbs` script, please see [Resource Usage](#resource-usage) and [Benchmarking metrics](#benchmarking-metrics) sections. 
+All scripts must be run from the `Fastq-to-BAM` directory. For how to calculate the resource requirements for each `_run_parallel.pbs` script, please see [Resource Usage](#resource-usage) and [Benchmarking metrics](#benchmarking-metrics) sections. 
 
 ### FastQC 
 
