@@ -1,9 +1,9 @@
-#!/bin/bash
+#!/bin/bash 
 
 ##########################################################################
 #
 # Platform: NCI Gadi HPC
-# Usage: qsub index_reference.pbs
+# Usage: qsub split_fastq_run_parallel.pbs
 # Version: 2.0
 #
 # For more details see: https://github.com/Sydney-Informatics-Hub/Fastq-to-BAM
@@ -22,28 +22,38 @@
 ##########################################################################
 
 #PBS -P 
-#PBS -N index-ref
-#PBS -l walltime=02:00:00
-#PBS -l ncpus=1
-#PBS -l mem=32GB
+#PBS -N split_fastq
+#PBS -l walltime=00:00:00
+#PBS -l ncpus=
+#PBS -l mem=GB
 #PBS -q normal
 #PBS -W umask=022
 #PBS -l wd
-#PBS -o ./Logs/index_ref.o
-#PBS -e ./Logs/index_ref.e
-#PBS -lstorage=
+#PBS -o ./Logs/split_fastq.o
+#PBS -e ./Logs/split_fastq.e
+#PBS -l storage=scratch/public+
 
+INPUTS=./Inputs/split_fastq.inputs
+# NCPUS per task
+NCPUS=4
 
-module load bwa/0.7.17
-module load samtools/1.10
-module load gatk/4.1.8.1
-module load python3/3.7.4
+mkdir -p ../Split_fastq ./Logs/split_fastq
 
-ref=../Reference/ #insert reference name (no suffix)
+#########################################################
+# Do not edit below this line
+#########################################################
 
-bwa index -a bwtsw ${ref}.fasta
+module load fastp/0.20.0
 
-samtools faidx ${ref}.fasta
+SCRIPT=./split_fastq.sh
 
-gatk CreateSequenceDictionary -R ${ref}.fasta -O ${ref}.dict
+M=$(( PBS_NCI_NCPUS_PER_NODE / NCPUS )) #tasks per node
+
+sed "s|^|${SCRIPT} |" ${INPUTS} > ${PBS_JOBFS}/input-file
+
+mpirun --np $((M * PBS_NCPUS / PBS_NCI_NCPUS_PER_NODE)) \
+        --map-by node:PE=${NCPUS} \
+        /scratch/public/bjm900/nci-parallel/bin/nci-parallel \
+        --verbose \
+        --input-file ${PBS_JOBFS}/input-file
 

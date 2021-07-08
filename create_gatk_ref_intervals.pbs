@@ -33,7 +33,7 @@
 #PBS -l wd
 #PBS -o ./Logs/gatk_ref_intervals.o
 #PBS -e ./Logs/gatk_ref_intervals.e
-#PBS -lstorage=
+#PBS -lstorage=scratch/public+
 
 module load gatk/4.1.8.1
 
