@@ -1,9 +1,9 @@
-#!/bin/bash
+#!/bin/bash 
 
 ##########################################################################
 #
 # Platform: NCI Gadi HPC
-# Usage: qsub bqsr_merge_run_parallel.pbs
+# Usage: qsub align_run_parallel.pbs
 # Version: 2.0
 #
 # For more details see: https://github.com/Sydney-Informatics-Hub/Fastq-to-BAM
@@ -20,38 +20,40 @@
 # Bioplatforms Australia funding.
 #
 ##########################################################################
- 
+
 #PBS -P 
-#PBS -N bqsr_merge
+#PBS -N align-chunk1
 #PBS -l walltime=00:00:00
 #PBS -l ncpus=
 #PBS -l mem=GB
-#PBS -W umask=022
 #PBS -q normal
+#PBS -W umask=022
 #PBS -l wd
-#PBS -o ./Logs/bqsr_merge.o
-#PBS -e ./Logs/bqsr_merge.e
-#PBS -lstorage=
+#PBS -o ./Logs/align.o
+#PBS -e ./Logs/align.e
+#PBS -l storage=scratch/public+
 
 set -e
 
-INPUTS=./Inputs/bqsr_merge.inputs
+INPUTS=./Inputs/align.inputs
+NCPUS=2 #cpus per parallel task
 
-NCPUS=3 # NCPUS per task. Needs 3 CPU worth of mem per task on normal nodes, and 1 CPU worth of mem per task on hugemem nodes
-PBS_NCI_NCPUS_PER_NODE=$PBS_NCPUS
-
-mkdir -p ../Final_bams ./Logs/BQSR_merge ./Logs/BQSR_merge_error_capture
+mkdir -p ../Align_split ../HLA_fastq ./Logs/Align ./Logs/Align_error_capture
 
 #########################################################
 # Do not edit below this line
 #########################################################
 
-module load openmpi/4.0.2
-module load nci-parallel/1.0.0
-module load gatk/4.1.8.1
+module load openmpi/4.1.0
+module load samtools/1.10
+module load bwa/0.7.17
+module load k8/0.2.5
 
 # SCRIPT
-SCRIPT=./bqsr_merge_GATK.sh
+#SCRIPT=./align.sh
+
+# SCRIPT FOR NON-HUMAN
+SCRIPT=./align_nonhuman.sh
 
 M=$(( PBS_NCI_NCPUS_PER_NODE / NCPUS )) #tasks per node
 
@@ -59,7 +61,7 @@ sed "s|^|${SCRIPT} |" ${INPUTS} > ${PBS_JOBFS}/input-file
 
 mpirun --np $((M * PBS_NCPUS / PBS_NCI_NCPUS_PER_NODE)) \
         --map-by node:PE=${NCPUS} \
-        nci-parallel \
+        /scratch/public/bjm900/nci-parallel/bin/nci-parallel \
         --verbose \
         --input-file ${PBS_JOBFS}/input-file
 

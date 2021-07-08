@@ -3,7 +3,7 @@
 ##########################################################################
 #
 # Platform: NCI Gadi HPC
-# Usage: qsub bqsr_recal_run_parallel.pbs
+# Usage: qsub bqsr_merge_run_parallel.pbs
 # Version: 2.0
 #
 # For more details see: https://github.com/Sydney-Informatics-Hub/Fastq-to-BAM
@@ -20,36 +20,37 @@
 # Bioplatforms Australia funding.
 #
 ##########################################################################
-
+ 
 #PBS -P 
-#PBS -N bqsr_recal
+#PBS -N bqsr_merge
 #PBS -l walltime=00:00:00
 #PBS -l ncpus=
 #PBS -l mem=GB
-#PBS -q normal
 #PBS -W umask=022
+#PBS -q normal
 #PBS -l wd
-#PBS -o ./Logs/bqsr_recal.o
-#PBS -e ./Logs/bqsr_recal.e
-#PBS -lstorage=
+#PBS -o ./Logs/bqsr_merge.o
+#PBS -e ./Logs/bqsr_merge.e
+#PBS -lstorage=scratch/public+
 
 set -e
 
-INPUTS=./Inputs/bqsr_recal.inputs
-NCPUS=2
+INPUTS=./Inputs/bqsr_merge.inputs
 
-mkdir -p ../BQSR_tables ./Logs/BQSR_recal ./Logs/BQSR_recal_error_capture
+NCPUS=3 # NCPUS per task. Needs 3 CPU worth of mem per task on normal nodes, and 1 CPU worth of mem per task on hugemem nodes
+PBS_NCI_NCPUS_PER_NODE=$PBS_NCPUS
+
+mkdir -p ../Final_bams ./Logs/BQSR_merge ./Logs/BQSR_merge_error_capture
 
 #########################################################
 # Do not edit below this line
 #########################################################
 
-module load openmpi/4.0.2
-module load nci-parallel/1.0.0
+module load openmpi/4.1.0
 module load gatk/4.1.8.1
 
 # SCRIPT
-SCRIPT=./bqsr_recal_nonhuman.sh
+SCRIPT=./bqsr_merge_GATK.sh
 
 M=$(( PBS_NCI_NCPUS_PER_NODE / NCPUS )) #tasks per node
 
@@ -57,7 +58,7 @@ sed "s|^|${SCRIPT} |" ${INPUTS} > ${PBS_JOBFS}/input-file
 
 mpirun --np $((M * PBS_NCPUS / PBS_NCI_NCPUS_PER_NODE)) \
         --map-by node:PE=${NCPUS} \
-        nci-parallel \
+        /scratch/public/bjm900/nci-parallel/bin/nci-parallel \
         --verbose \
         --input-file ${PBS_JOBFS}/input-file
 

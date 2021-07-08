@@ -1,0 +1,49 @@
+#!/bin/bash
+
+##########################################################################
+#
+# Platform: NCI Gadi HPC
+# Usage: qsub index_reference.pbs
+# Version: 2.0
+#
+# For more details see: https://github.com/Sydney-Informatics-Hub/Fastq-to-BAM
+#
+# If you use this script towards a publication, please acknowledge the
+# Sydney Informatics Hub (or co-authorship, where appropriate).
+#
+# Suggested acknowledgement:
+# The authors acknowledge the support provided by the Sydney Informatics Hub,
+# a Core Research Facility of the University of Sydney. This research/project
+# was undertaken with the assistance of resources and services from the National
+# Computational Infrastructure (NCI), which is supported by the Australian
+# Government, and the Australian BioCommons which is enabled by NCRIS via
+# Bioplatforms Australia funding.
+#
+##########################################################################
+
+#PBS -P 
+#PBS -N index-ref
+#PBS -l walltime=02:00:00
+#PBS -l ncpus=1
+#PBS -l mem=32GB
+#PBS -q normal
+#PBS -W umask=022
+#PBS -l wd
+#PBS -o ./Logs/index_ref.o
+#PBS -e ./Logs/index_ref.e
+#PBS -lstorage=scratch/public+
+
+
+module load bwa/0.7.17
+module load samtools/1.10
+module load gatk/4.1.8.1
+module load python3/3.7.4
+
+ref=../Reference/ #insert reference name (no suffix)
+
+bwa index -a bwtsw ${ref}.fasta
+
+samtools faidx ${ref}.fasta
+
+gatk CreateSequenceDictionary -R ${ref}.fasta -O ${ref}.dict
+

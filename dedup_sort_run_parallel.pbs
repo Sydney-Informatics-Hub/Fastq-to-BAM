@@ -1,9 +1,9 @@
-#!/bin/bash 
+#!/bin/bash
 
 ##########################################################################
 #
 # Platform: NCI Gadi HPC
-# Usage: qsub split_fastq_run_parallel.pbs
+# Usage: qsub dedup_sort_run_parallel.pbs
 # Version: 2.0
 #
 # For more details see: https://github.com/Sydney-Informatics-Hub/Fastq-to-BAM
@@ -22,31 +22,35 @@
 ##########################################################################
 
 #PBS -P 
-#PBS -N split_fastq
-#PBS -l walltime=00:00:00
+#PBS -N Dedup_sort
 #PBS -l ncpus=
 #PBS -l mem=GB
-#PBS -q normal
+#PBS -l walltime=00:00:00
+#PBS -q normalbw
 #PBS -W umask=022
 #PBS -l wd
-#PBS -o ./Logs/split_fastq.o
-#PBS -e ./Logs/split_fastq.e
-#PBS -l storage=
+#PBS -o ./Logs/dedup_sort.o
+#PBS -e ./Logs/dedup_sort.e
+#PBS -l storage=scratch/public+
 
-INPUTS=./Inputs/split_fastq.inputs
-# NCPUS per task
-NCPUS=4
+set -e
 
-mkdir -p ../Split_fastq ./Logs/split_fastq
+INPUTS=./Inputs/dedup_sort.inputs
+NCPUS=28 #Private node per sample, needs all the RAM, but give samtools fewer threads
+SAMTOOLS_NCPUS=12
+
+mkdir -p ../Dedup_sort ../SplitDisc ./Logs/Dedup_sort ./Logs/Dedup_sort_error_capture
 
 #########################################################
 # Do not edit below this line
 #########################################################
 
-module load nci-parallel/1.0.0
-module load fastp/0.20.0
+module load openmpi/4.1.0
+module load samtools/1.10
+samblaster=/scratch/er01/apps/samblaster/0.1.24/samblaster
 
-SCRIPT=./split_fastq.sh
+# SCRIPT
+SCRIPT=./dedup_sort.sh
 
 M=$(( PBS_NCI_NCPUS_PER_NODE / NCPUS )) #tasks per node
 
@@ -54,7 +58,7 @@ sed "s|^|${SCRIPT} |" ${INPUTS} > ${PBS_JOBFS}/input-file
 
 mpirun --np $((M * PBS_NCPUS / PBS_NCI_NCPUS_PER_NODE)) \
         --map-by node:PE=${NCPUS} \
-        nci-parallel \
+        /scratch/public/bjm900/nci-parallel/bin/nci-parallel \
         --verbose \
         --input-file ${PBS_JOBFS}/input-file
 

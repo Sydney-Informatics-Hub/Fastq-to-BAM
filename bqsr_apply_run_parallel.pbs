@@ -1,9 +1,9 @@
-#!/bin/bash 
+#!/bin/bash
 
 ##########################################################################
 #
 # Platform: NCI Gadi HPC
-# Usage: qsub fastqc_run_parallel.pbs
+# Usage: qsub bqsr_apply_run_parallel.pbs
 # Version: 2.0
 #
 # For more details see: https://github.com/Sydney-Informatics-Hub/Fastq-to-BAM
@@ -21,37 +21,36 @@
 #
 ##########################################################################
 
-#PBS -P
-#PBS -N fastqc
+
+#PBS -P 
+#PBS -N bqsr_apply
 #PBS -l walltime=00:00:00
 #PBS -l ncpus=
 #PBS -l mem=GB
-#PBS -l wd
-#PBS -q normalbw
 #PBS -W umask=022
-#PBS -l storage=
-#PBS -o ./Logs/fastqc.o
-#PBS -e ./Logs/fastqc.e
+#PBS -q normal
+#PBS -l wd
+#PBS -o ./Logs/bqsr_apply.o
+#PBS -e ./Logs/bqsr_apply.e
+#PBS -lstorage=scratch/public+
 
 set -e
 
-# SCRIPT
-INPUTS=./Inputs/fastqc.inputs
-# NCPUs = CPUs per task
-NCPUS=1
-# Hash this out if requesting more than a full node
-PBS_NCI_NCPUS_PER_NODE=$PBS_NCPUS
+INPUTS=./Inputs/bqsr_apply.inputs
+NCPUS=2 #single threaded, but needed for mem
+
+mkdir -p ../BQSR_apply ./Logs/BQSR_apply ./Logs/BQSR_apply_error_capture
 
 #########################################################
 # Do not edit below this line
 #########################################################
 
-module load openmpi/4.0.2
-module load nci-parallel/1.0.0
-module load fastqc/0.11.7
+module load openmpi/4.1.0
+module load gatk/4.1.8.1 #loads also java/jdk1.8.0_60
+module load samtools/1.10
 
 # SCRIPT
-SCRIPT=./fastqc.sh
+SCRIPT=./bqsr_apply.sh
 
 M=$(( PBS_NCI_NCPUS_PER_NODE / NCPUS )) #tasks per node
 
@@ -59,6 +58,7 @@ sed "s|^|${SCRIPT} |" ${INPUTS} > ${PBS_JOBFS}/input-file
 
 mpirun --np $((M * PBS_NCPUS / PBS_NCI_NCPUS_PER_NODE)) \
         --map-by node:PE=${NCPUS} \
-        nci-parallel \
+        /scratch/public/bjm900/nci-parallel/bin/nci-parallel \
         --verbose \
         --input-file ${PBS_JOBFS}/input-file
+
