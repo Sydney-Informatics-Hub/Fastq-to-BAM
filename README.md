@@ -55,7 +55,7 @@ This pipeline has specific input and directory structure requirements. The set u
 |-- create_project.bash
 |-- Fastq
 ```
-We refer to this directory as the __base__ directory. The __working directory__(where you run scripts) is in Fastq-to-BAM.
+We refer to this directory as the __base__ directory. The __working directory__ (where you run scripts) is `Fastq-to-BAM`.
 
 ### Required inputs
 
