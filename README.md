@@ -125,7 +125,7 @@ Prepare split intervals for GATK scatter-gathering (this enables multi-node, emb
 qsub create_gatk_ref_intervals.pbs
 ```
 
-#### 4. Run `bash create_project.bash` from the Fastq-to-BAM base directory 
+#### 4. Run `bash create_project.bash` 
 
  This script will edit all pipeline scripts and create the required directory set up. Users will be prompted to provide the following:
 
