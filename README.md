@@ -65,11 +65,11 @@ The Fastq-to-BAM pipeline requires users supply the following inputs:
 * An indexed reference genome assembly in FASTA format (in `Reference` directory)
 * A set of high-confidence variants in VCF format (if performing BQSR)  
 
-Please see the steps below for more details.
+Please see the steps below for a full description of these files and directories. 
 
 #### 1. Prepare the config file 
 
-The config file must have the suffix '.config' (i.e. cohortname.config) and __one row per unique sample__, matching the format SampleID\tLabSampleID\tSeqCentre\tLibrary(default=1) where: 
+The config file must have the suffix '.config' (i.e. cohortname.config) and __one row per unique sample__, matching the format #SampleID\tLabSampleID\tSeqCentre\tLibrary(default=1) where: 
 
    - SampleID is the unique identifier enabling one to recognise which FASTQs belong to the same sample, including samples which have been multiplexed (e.g., IDs provided by your sequencing company. This can often be the same as the LabSampleID)
    - LabSampleID is the desired name for the output files for that sample i.e. in-house ID
