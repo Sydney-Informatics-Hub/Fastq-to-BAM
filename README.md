@@ -361,7 +361,7 @@ Acknowledgements (and co-authorship, where appropriate) are an important way for
 - Georgina Samaha (Sydney Informatics Hub, University of Sydney)
 - Rosemarie Sadsad (Sydney Informatics Hub, University of Sydney)
 - Andrey Bliznyuk (National Computational Infrastructure)
-- Roger Edberg (National Computational Infrastructure)
+- Ben Menadue (National Computational Infrastructure)
 
 ### Suggested acknowledgements
 
