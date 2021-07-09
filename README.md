@@ -59,15 +59,13 @@ We refer to this directory as the __base__ directory. The __working directory__ 
 
 ### Required inputs
 
-The Fastq-to-BAM pipeline requires users supply the following inputs: 
+The Fastq-to-BAM pipeline requires users supply the following inputs (a full description of each are provided below):
 * A `<cohort>.config` file listing all samples and required metadata in TSV file format
 * Short read sequences in FASTQ format (in a `Fastq` directory)  
 * An indexed reference genome assembly in FASTA format (in `Reference` directory)
 * A set of high-confidence variants in VCF format (if performing BQSR)  
 
-Please see the steps below for a full description of these files and directories. 
-
-#### 1. Prepare the config file 
+#### 1. Prepare your cohort.config file 
 
 The config file must have the suffix '.config' (i.e. cohortname.config) and __one row per unique sample__, matching the format #SampleID\tLabSampleID\tSeqCentre\tLibrary(default=1) where: 
 
@@ -77,14 +75,23 @@ The config file must have the suffix '.config' (i.e. cohortname.config) and __on
    - Library (default=1)  
 
 Save the config file to the base directory, as in [set up](#set-up).
+
+#### 2. Raw FASTQ files
+
+Create a directory by `mkdir -p Fastq` in the base directory and download your raw FASTQ files into this directory (see [the data transfer section of our Intro to Gadi course for tips and scripts to do this](https://sydney-informatics-hub.github.io/training.gadi.intro/05-Data-transfer/index.html)). We also recommend copying .md5 files that should be provided by your sequencing company and performing checksums to confirm the validity of the files after transfer. 
      
-#### 2. Prepare the reference genome
+#### 3. Prepare the reference genome
+
+__Human genome: hg38 + alternate contigs__
 
 Provided with this pipeline is the (+ alt contigs) reference assembly. The complete set of Hg38 required files can be downloaded with the following commands to the base directory, as in [set up](#set-up):
 
 ```
 wget https://cloudstor.aarnet.edu.au/plus/s/CHeAuEsBkHalDvI/download -O Reference.tar.gz
 wget https://cloudstor.aarnet.edu.au/plus/s/0fN5X8tksH2PGso/download -O Reference.tar.gz.md5
+
+# Perform checksums 
+md5sum -c Reference.tar.gz.md5
 ```
 
 Next, unpack the Reference tar file: 
@@ -118,16 +125,16 @@ Prepare split intervals for GATK scatter-gathering (this enables multi-node, emb
 qsub create_gatk_ref_intervals.pbs
 ```
 
-#### 3. Run `bash create_project.bash` from the Fastq-to-BAM base directory 
+#### 4. Run `bash create_project.bash` from the Fastq-to-BAM base directory 
 
  This script will edit all pipeline scripts and create the required directory set up. Users will be prompted to provide the following:
 
 * NCI project e.g. ab00  
-* Name of scripts directory (relative or absolute) e.g. ./Scripts or /scratch/ab00/Fastq-to-BAM/Scripts  
+* Path to the directory containing your scripts - `Fastq-to-BAM` (relative or absolute) e.g. ./Fastq-to-BAM or /scratch/ab00/Fastq-to-BAM
 * Basename of config file e.g. cohortname for cohortname.config
 * Full path to the reference directory e.g. /scratch/ab00/Fastq-to-BAM/Reference  
 * Name of your reference genome sequence (include suffix) e.g. Hg38.fasta   
-* Required read/write access to any Gadi storage other than the supplied NCI project e.g. er01 
+* Required read/write access to any Gadi storage other than the supplied NCI project e.g. ab00
 
 ## Usage 
 
