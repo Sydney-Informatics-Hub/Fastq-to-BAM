@@ -136,9 +136,9 @@ qsub create_gatk_ref_intervals.pbs
 * Name of your reference genome sequence (include suffix) e.g. Hg38.fasta   
 * Required read/write access to any Gadi storage other than the supplied NCI project e.g. ab00
 
-## Usage 
+## User guide 
 
-Users will run a series of scripts for each stage of the Fastq-to-BAM pipeline. Run all scripts from the `Fastq-to-BAM` directory - this is your working directory. After completing [set up](#set-up), each subsequent stage consists of a `make_input.sh` script which creates a list of input files and a `run_parallel.pbs` script which submits the `<task>.sh` in parallel to the PBS job scheduler. Some stages have additional 'checker' scripts that can be run to confirm the integrity of a process' output. Each stage is detailed below.
+Users will run a series of scripts for each stage of the Fastq-to-BAM pipeline. After completing [set up](#set-up), follow the steps in the subheading belows. In brief, each job  consists of a `make_input.sh` script which creates a list of input files and a `run_parallel.pbs` script which submits the `<task>.sh` in parallel to the PBS job scheduler. Some stages have additional 'checker' scripts that can be run to confirm the integrity of a process' output. Each stage is detailed below.
    
 All scripts must be run from the `Fastq-to-BAM` directory. For how to calculate the resource requirements for each `_run_parallel.pbs` script, please see [Resource Usage](#resource-usage) and [Benchmarking metrics](#benchmarking-metrics) sections. 
 
