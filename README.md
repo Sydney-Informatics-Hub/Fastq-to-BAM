@@ -39,7 +39,7 @@ All software required to run the fastq-to-bam pipeline include:
 * java/jdk1.8.0_60
 * k8/0.2.5
 * nci-parallel/1.0.0
-* openmpi/4.0.2
+* openmpi/4.1.0
 * sambamba/0.7.1
 * samblaster/0.1.24
 * samtools/1.10
