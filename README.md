@@ -369,7 +369,7 @@ The authors acknowledge the technical assistance provided by the Sydney Informat
 
 ## Cite us to support us! 
    
-The Fastq-to-BAM pipeline can be cited as DOI: 10.48546/workflowhub.workflow.146.1
+The Fastq-to-BAM pipeline can be cited as DOI: https://doi.org/10.48546/workflowhub.workflow.146.1
 
 If you use our pipelines, please cite us:
 
