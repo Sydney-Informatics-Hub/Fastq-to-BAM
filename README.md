@@ -371,7 +371,7 @@ The authors acknowledge the technical assistance provided by the Sydney Informat
    
 If you use our pipeline, please cite us:
 
-Sydney Informatics Hub, Core Research Facilities, University of Sydney, 2021, The Sydney Informatics Hub Bioinformatics Repository, \<date accessed\>, https://workflowhub.eu/workflows/146   
+Sydney Informatics Hub, Core Research Facilities, University of Sydney, 2021, Fastq-to-BAM at NCI-Gadi, \<date accessed\>, https://workflowhub.eu/workflows/146   
 
 ## References 
 
