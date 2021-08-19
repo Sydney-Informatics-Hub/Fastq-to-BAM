@@ -369,9 +369,11 @@ The authors acknowledge the technical assistance provided by the Sydney Informat
 
 ## Cite us to support us! 
    
-If you use our pipeline, please cite us:
+The Fastq-to-BAM pipeline can be cited as DOI: 10.48546/workflowhub.workflow.146.1
 
-Sydney Informatics Hub, Core Research Facilities, University of Sydney, 2021, Fastq-to-BAM at NCI-Gadi, \<date accessed\>, https://workflowhub.eu/workflows/146   
+If you use our pipelines, please cite us:
+
+Sydney Informatics Hub, Core Research Facilities, University of Sydney, 2021, The Sydney Informatics Hub Bioinformatics Repository, <date accessed>, https://github.com/Sydney-Informatics-Hub/Bioinformatics  
 
 ## References 
 
