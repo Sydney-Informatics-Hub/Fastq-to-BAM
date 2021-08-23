@@ -32,7 +32,8 @@ NOTE: This pipeline is currently compatible with NCI Gadi only.
 
 All software required to run the fastq-to-bam pipeline include:
 
-* bwa/0.7.17
+* bwa/0.7.17 
+* bwakit/0.7.11
 * fastp/0.20.0
 * fastqc/0.11.7
 * gatk/4.1.8.1
@@ -43,6 +44,7 @@ All software required to run the fastq-to-bam pipeline include:
 * sambamba/0.7.1
 * samblaster/0.1.24
 * samtools/1.10
+* seqtk/1.3-r113-dirty
 
 ## Set up 
 
