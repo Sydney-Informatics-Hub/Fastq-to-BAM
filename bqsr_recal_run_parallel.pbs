@@ -31,7 +31,7 @@
 #PBS -l wd
 #PBS -o ./Logs/bqsr_recal.o
 #PBS -e ./Logs/bqsr_recal.e
-#PBS -lstorage=scratch/public+
+#PBS -lstorage=
 
 set -e
 
@@ -44,11 +44,13 @@ mkdir -p ../BQSR_tables ./Logs/BQSR_recal ./Logs/BQSR_recal_error_capture
 # Do not edit below this line
 #########################################################
 
+module load nci-parallel/1.0.0a
 module load openmpi/4.1.0
 module load gatk/4.1.8.1
 
 # SCRIPT
-SCRIPT=./bqsr_recal_nonhuman.sh
+SCRIPT=./bqsr_recal.sh
+#SCRIPT=./bqsr_recal_nonhuman.sh
 
 M=$(( PBS_NCI_NCPUS_PER_NODE / NCPUS )) #tasks per node
 
@@ -56,7 +58,6 @@ sed "s|^|${SCRIPT} |" ${INPUTS} > ${PBS_JOBFS}/input-file
 
 mpirun --np $((M * PBS_NCPUS / PBS_NCI_NCPUS_PER_NODE)) \
         --map-by node:PE=${NCPUS} \
-        /scratch/public/bjm900/nci-parallel/bin/nci-parallel \
+        nci-parallel \
         --verbose \
         --input-file ${PBS_JOBFS}/input-file
-
