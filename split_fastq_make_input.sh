@@ -21,26 +21,24 @@
 #
 ##########################################################################
 
-
 cohort=../$1
 
 inputs=./Inputs/split_fastq.inputs
 
 rm -f $inputs
 
-awk 'NR>1' ${cohort}.config | while read LINE
-do
-        sample=`echo $LINE | cut -d ' ' -f 1`
+awk 'NR>1' ${cohort}.config | while read sample
+        do
+        sample=`echo $sample | cut -f 1 -d ' '`
+        #echo $sample #use this to check $sample is correctly capturing your sampleID
 
-# Find all fastq input pairs for $sample
-        fqpairs=$(ls ../Fastq/${sample}*f*q.gz | sed  's/_R1.*\|_R2.*\|_R1_*\|_R2_*\|.R1.*\|.R2.*//' | sort | uniq) #check regex per batch
-        fqpairs=($fqpairs)
+        # find fastq pairs for each $sample. Check regex matches your samples
+        fqpairs=$(find ../Fastq -name ${sample}*.f*q.gz | sed  's/.R1.*\|.R2.*\|_R1.*\|_R2.*\|_R1_*\|_R2_*//' $
+        #echo $fqpairs #use this to check $fqpairs is capturing your fqs
 
-# Print fastq pair info to inputs file
-        printf "${fqpairs}\n" >> $inputs
+        # print fq pair info to input file
+        printf '%s\n' $fqpairs >> $inputs
 
-done
-
-tasks=`wc -l < $inputs`
+        done
+tasks=`wc -l < ${inputs}`
 printf "Number of fastq pairs to split: ${tasks}\n"
-
