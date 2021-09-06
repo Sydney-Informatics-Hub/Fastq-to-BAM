@@ -31,7 +31,7 @@
 #PBS -l wd
 #PBS -o ./Logs/dedup_sort.o
 #PBS -e ./Logs/dedup_sort.e
-#PBS -l storage=scratch/public+
+#PBS -l storage=
 
 set -e
 
@@ -45,6 +45,7 @@ mkdir -p ../Dedup_sort ../SplitDisc ./Logs/Dedup_sort ./Logs/Dedup_sort_error_ca
 # Do not edit below this line
 #########################################################
 
+module load nci-parallel/1.0.0a
 module load openmpi/4.1.0
 module load samtools/1.10
 samblaster=/scratch/er01/apps/samblaster/0.1.24/samblaster
@@ -58,7 +59,7 @@ sed "s|^|${SCRIPT} |" ${INPUTS} > ${PBS_JOBFS}/input-file
 
 mpirun --np $((M * PBS_NCPUS / PBS_NCI_NCPUS_PER_NODE)) \
         --map-by node:PE=${NCPUS} \
-        /scratch/public/bjm900/nci-parallel/bin/nci-parallel \
+        nci-parallel \
         --verbose \
         --input-file ${PBS_JOBFS}/input-file
 
