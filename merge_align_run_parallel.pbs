@@ -31,7 +31,7 @@
 #PBS -l wd
 #PBS -o ./Logs/merge_align.o
 #PBS -e ./Logs/merge_align.e
-#PBS -l storage=scratch/public+
+#PBS -l storage=
 
 set -e
 
@@ -43,11 +43,11 @@ NCPUS=28 #normalbw
 
 mkdir -p ../Merge_align ./Logs/Merge_align_error_capture
 
-
 #########################################################
 # Do not edit below this line
 #########################################################
 
+module load nci-parallel/1.0.0a
 module load openmpi/4.1.0
 module load sambamba/0.7.1
 module load samtools/1.10
@@ -61,7 +61,7 @@ sed "s|^|${SCRIPT} |" ${INPUTS} > ${PBS_JOBFS}/input-file
 
 mpirun --np $((M * PBS_NCPUS / PBS_NCI_NCPUS_PER_NODE)) \
         --map-by node:PE=${NCPUS} \
-        /scratch/public/bjm900/nci-parallel/bin/nci-parallel \
+        nci-parallel \
         --verbose \
         --input-file ${PBS_JOBFS}/input-file
 
