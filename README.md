@@ -210,7 +210,7 @@ This script will check that merged alignments meet the expected size. We expect 
 
 ### Mark duplicates and sort BAM
 
-In this step, duplicate reads are marked, then sorted by genomic coordinate and indexed. During duplicate read marking, split and discordant reads are extracted to BAM format for later analysis. 
+In this step, duplicate reads are marked, then sorted by genomic coordinate and indexed. During duplicate read marking, split and discordant reads are extracted to SAM format and reformatted as BAM for later analysis.
 
 Steps for running dedup_sort scripts are: 
 
@@ -221,6 +221,14 @@ This script reads samples from the config file and creates an inputs list for du
 **2. Run `qsub dedup_sort_run_parallel.pbs`**  
 
 This script will run `dedup_sort.sh` which sorts reads by coordinates and mark duplicate reads, for each sample. It will also extract split and discordant reads to separate files. 
+
+**3. Run `bash reformat_split_disc_make_input.sh <config prefix>`** 
+
+This script reads samples from the config file and creates an inputs list for converting SAM files containing discordant and split reads to BAM format. This script can be adjusted for cohorts with a binomial difference in coverage (e.g. 30x/60x normal/tumour samples). If a binomial grouping is desired, change `group=false` to `group=true`. 
+
+**4. Run `qsub reformat_split_disc_run_parallel.pbs`**  
+
+This script will run `reformat_split_disc.sh` which reformats split and discordant reads from SAM to BAM format (and indexes the BAM). SAMblaster optionally outputs split reads and discordant reads to SAM format. These reads are useful for downstream SV detection and analysis. After this script has been run successfully, the SAM files can be deleted.
 
 ### Index BAM
 
