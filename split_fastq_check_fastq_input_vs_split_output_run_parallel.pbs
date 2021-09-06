@@ -31,7 +31,7 @@
 #PBS -l wd
 #PBS -o ./Logs/check_split_fastq.o
 #PBS -e ./Logs/check_split_fastq.e
-#PBS -l storage=scratch/public+
+#PBS -l storage=
 
 # For singleton data:
 #SCRIPT=./Scripts/split_fastq_singletons.sh
@@ -47,6 +47,7 @@ mkdir -p ../Check_split_fastq
 # Do not edit below this line
 #########################################################
 
+module load nci-parallel/1.0.0a
 module load openmpi/4.1.0
 module load parallel/20191022
 
@@ -58,7 +59,7 @@ sed "s|^|${SCRIPT} |" ${INPUTS} > ${PBS_JOBFS}/input-file
 
 mpirun --np $((M * PBS_NCPUS / PBS_NCI_NCPUS_PER_NODE)) \
         --map-by node:PE=${NCPUS} \
-        /scratch/public/bjm900/nci-parallel/bin/nci-parallel \
+        nci-parallel \
         --verbose \
         --input-file ${PBS_JOBFS}/input-file
 
