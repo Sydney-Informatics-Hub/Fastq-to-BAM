@@ -31,7 +31,7 @@
 #PBS -l wd
 #PBS -o ./Logs/align.o
 #PBS -e ./Logs/align.e
-#PBS -l storage=scratch/public+
+#PBS -l storage=
 
 set -e
 
@@ -44,6 +44,7 @@ mkdir -p ../Align_split ../HLA_fastq ./Logs/Align ./Logs/Align_error_capture
 # Do not edit below this line
 #########################################################
 
+module load nci-parallel/1.0.0a
 module load openmpi/4.1.0
 module load samtools/1.10
 module load bwa/0.7.17
@@ -61,7 +62,7 @@ sed "s|^|${SCRIPT} |" ${INPUTS} > ${PBS_JOBFS}/input-file
 
 mpirun --np $((M * PBS_NCPUS / PBS_NCI_NCPUS_PER_NODE)) \
         --map-by node:PE=${NCPUS} \
-        /scratch/public/bjm900/nci-parallel/bin/nci-parallel \
+        nci-parallel \
         --verbose \
         --input-file ${PBS_JOBFS}/input-file
 
