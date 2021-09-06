@@ -31,7 +31,7 @@
 #PBS -l wd
 #PBS -o ./Logs/split_fastq.o
 #PBS -e ./Logs/split_fastq.e
-#PBS -l storage=scratch/public+
+#PBS -l storage=
 
 INPUTS=./Inputs/split_fastq.inputs
 # NCPUS per task
@@ -43,6 +43,8 @@ mkdir -p ../Split_fastq ./Logs/split_fastq
 # Do not edit below this line
 #########################################################
 
+module load nci-parallel/1.0.0a
+module load openmpi/4.1.0
 module load fastp/0.20.0
 
 SCRIPT=./split_fastq.sh
@@ -53,7 +55,7 @@ sed "s|^|${SCRIPT} |" ${INPUTS} > ${PBS_JOBFS}/input-file
 
 mpirun --np $((M * PBS_NCPUS / PBS_NCI_NCPUS_PER_NODE)) \
         --map-by node:PE=${NCPUS} \
-        /scratch/public/bjm900/nci-parallel/bin/nci-parallel \
+        nci-parallel \
         --verbose \
         --input-file ${PBS_JOBFS}/input-file
 
