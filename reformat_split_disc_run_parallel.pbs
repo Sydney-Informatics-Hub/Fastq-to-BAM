@@ -1,0 +1,61 @@
+#!/bin/bash
+
+##########################################################################
+#
+# Platform: NCI Gadi HPC
+# Usage: qsub reformat_split_disc_run_parallel.pbs
+# Version: 2.0
+#
+# For more details see: https://github.com/Sydney-Informatics-Hub/Fastq-to-BAM
+#
+# If you use this script towards a publication, please acknowledge the
+# Sydney Informatics Hub (or co-authorship, where appropriate).
+#
+# Suggested acknowledgement:
+# The authors acknowledge the support provided by the Sydney Informatics Hub,
+# a Core Research Facility of the University of Sydney. This research/project
+# was undertaken with the assistance of resources and services from the National
+# Computational Infrastructure (NCI), which is supported by the Australian
+# Government, and the Australian BioCommons which is enabled by NCRIS via
+# Bioplatforms Australia funding.
+#
+##########################################################################
+
+#PBS -P
+#PBS -N reformat_splitdisc
+#PBS -l walltime=01:00:00
+#PBS -l ncpus=
+#PBS -l mem=GB
+#PBS -q normal
+#PBS -W umask=022
+#PBS -l wd
+#PBS -o ./Logs/reformat_split_disc.o
+#PBS -e ./Logs/reformat_split_disc.e
+#PBS -lstorage=
+
+module load openmpi/4.1.0
+module load samtools/1.10
+module load nci-parallel/1.0.0a
+
+set -e
+
+SCRIPT=./reformat_split_disc.sh
+INPUTS=./Inputs/reformat_split_disc.inputs
+
+NCPUS=12 # CPUs per parallel task
+
+
+#########################################################
+# Do not edit below this line
+#########################################################
+
+if [[ $PBS_QUEUE =~ bw-exec ]]; then CPN=28; else CPN=48; fi
+M=$(( CPN / NCPUS )) #tasks per node
+
+sed "s|^|${SCRIPT} |" ${INPUTS} > ${PBS_JOBFS}/input-file
+
+mpirun --np $((M * PBS_NCPUS / CPN)) \
+        --map-by node:PE=${NCPUS} \
+        nci-parallel \
+        --verbose \
+        --input-file ${PBS_JOBFS}/input-file
