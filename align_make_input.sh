@@ -41,7 +41,7 @@ do
                 #Find all fastq input pairs for $sample
                 #Will collect multiplexed samples named with standard FASTQ naming convention
                 #check regex per batch
-                fqpairs=$(ls ../Fastq/${sampleid}*f*q.gz | sed  's/_R1.*\|_R2.*\|_R1_*\|_R2_*\|.R1.*\|.R2.*//' | sort | uniq)
+                fqpairs=$(ls ../Fastq/*${sampleid}*f*q.gz | sed  's/_R1.*\|_R2.*\|_R1_*\|_R2_*\|.R1.*\|.R2.*//' | sort | uniq)
                 fqpairs=($fqpairs)
 
 
