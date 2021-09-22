@@ -381,10 +381,6 @@ The authors acknowledge the technical assistance provided by the Sydney Informat
    
 The Fastq-to-BAM pipeline can be cited as DOI: https://doi.org/10.48546/workflowhub.workflow.146.1
 
-If you use our pipelines, please cite us:
-
-Sydney Informatics Hub, Core Research Facilities, University of Sydney, 2021, The Sydney Informatics Hub Bioinformatics Repository, <date accessed>, https://github.com/Sydney-Informatics-Hub/Bioinformatics  
-
 ## References 
 
 Chen, S., Zhou Y., Chen Y., Gu J. fastp: an ultra-fast all-in-one FASTQ preprocessor, Bioinformatics, Volume 34, Issue 17, 01 September 2018, Pages i884–i890, https://doi.org/10.1093/bioinformatics/bty560  
