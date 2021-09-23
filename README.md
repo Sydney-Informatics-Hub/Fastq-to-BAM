@@ -69,7 +69,12 @@ The Fastq-to-BAM pipeline requires users supply the following inputs (a full des
 
 #### 1. Prepare your cohort.config file 
 
-The config file must have the suffix '.config' (i.e. cohortname.config) and __one row per unique sample__, matching the format #SampleID\tLabSampleID\tSeqCentre\tLibrary(default=1) where: 
+The config file must have the suffix '.config' (i.e. cohortname.config) and __one row per unique sample__, matching the format:
+
+|#SampleID|LabSampleID|Seq_centre|Library(default=1)|
+|---------|-----------|----------|------------------|
+|SAMPLE1  |SAMPLE1    |AGRF      |                  |
+|SAMPLE2  |SAMPLE2    |KCCG      |                  |
 
    - SampleID is the unique identifier enabling one to recognise which FASTQs belong to the same sample, including samples which have been multiplexed (e.g., IDs provided by your sequencing company. This can often be the same as the LabSampleID)
    - LabSampleID is the desired name for the output files for that sample i.e. in-house ID
