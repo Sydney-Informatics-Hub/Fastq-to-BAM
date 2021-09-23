@@ -73,7 +73,7 @@ The config file must have the suffix '.config' (i.e. cohortname.config) and __on
 
    - SampleID is the unique identifier enabling one to recognise which FASTQs belong to the same sample, including samples which have been multiplexed (e.g., IDs provided by your sequencing company. This can often be the same as the LabSampleID)
    - LabSampleID is the desired name for the output files for that sample i.e. in-house ID
-      - If you have tumour/matched normal samples, normal samples denoted by <patientID>-N or <patientID>-B are considered to match to tumour samples denoted by <patientID>-<tumourID> if you are using the [Somatic-ShortV pipeline](https://github.com/Sydney-Informatics-Hub/Somatic-ShortV) 
+      - If you have tumour/matched normal samples, normal samples denoted by `<patientID>-N` or `<patientID>-B` are considered to match to tumour samples denoted by `<patientID>-<tumourID>` if you are using the [Somatic-ShortV pipeline](https://github.com/Sydney-Informatics-Hub/Somatic-ShortV) 
    - SeqCentre (where the samples were sequenced, this metadata will be stored in the final BAM files)
    - Library (default=1)  
 
