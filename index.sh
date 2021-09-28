@@ -21,42 +21,8 @@
 #
 ##########################################################################
 
-#PBS -P 
-#PBS -N index
-#PBS -l walltime=00:00:00
-#PBS -l ncpus=
-#PBS -l mem=GB
-#PBS -q normal
-#PBS -W umask=022
-#PBS -l wd
-#PBS -o ./Logs/index.o
-#PBS -e ./Logs/index.e
-#PBS -l storage=
+labSampleID=$1
 
-set -e
+bam_out=../Dedup_sort/${labSampleID}.coordSorted.dedup.bam
 
-INPUTS=./Inputs/index.inputs
-
-NCPUS=24
-
-#########################################################
-# Do not edit below this line
-#########################################################
-
-module load openmpi/4.0.2
-module load nci-parallel/1.0.0
-module load samtools/1.10
-
-# SCRIPT
-SCRIPT=./index.sh
-
-M=$(( PBS_NCI_NCPUS_PER_NODE / NCPUS )) #tasks per node
-
-sed "s|^|${SCRIPT} |" ${INPUTS} > ${PBS_JOBFS}/input-file
-
-mpirun --np $((M * PBS_NCPUS / PBS_NCI_NCPUS_PER_NODE)) \
-        --map-by node:PE=${NCPUS} \
-        nci-parallel \
-        --verbose \
-        --input-file ${PBS_JOBFS}/input-file
-
+samtools index -@ ${NCPUS} $bam_out
