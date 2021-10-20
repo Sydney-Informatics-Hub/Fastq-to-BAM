@@ -385,7 +385,7 @@ The authors acknowledge the technical assistance provided by the Sydney Informat
 
 ## Cite us to support us! 
    
-The Fastq-to-BAM pipeline can be cited as DOI: https://doi.org/10.48546/workflowhub.workflow.146.1
+Willet, C., Chew, T., Samaha, G., & Sadsad, R. (2021). Fastq-to-BAM (Version 2.0) [Computer software]. https://doi.org/10.48546/workflowhub.workflow.146.1
 
 ## References 
 
