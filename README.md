@@ -376,8 +376,8 @@ Acknowledgements (and co-authorship, where appropriate) are an important way for
 - Tracy Chew (Sydney Informatics Hub, University of Sydney)
 - Georgina Samaha (Sydney Informatics Hub, University of Sydney)
 - Rosemarie Sadsad (Sydney Informatics Hub, University of Sydney)
-- Andrey Bliznyuk (National Computational Infrastructure)
 - Ben Menadue (National Computational Infrastructure)
+- Rika Kobayashi (National Computational Infrastructure)
 
 ### Suggested acknowledgements
 
@@ -385,7 +385,7 @@ The authors acknowledge the technical assistance provided by the Sydney Informat
 
 ## Cite us to support us! 
    
-Willet, C., Chew, T., Samaha, G., & Sadsad, R. (2021). Fastq-to-BAM (Version 2.0) [Computer software]. https://doi.org/10.48546/workflowhub.workflow.146.1
+Willet, C., Chew, T., Samaha, G., Menadue, B. J., Kobayashi, R., & Sadsad, R. (2021). Fastq-to-BAM (Version 2.0) [Computer software]. https://doi.org/10.48546/workflowhub.workflow.146.1
 
 ## References 
 
