@@ -378,6 +378,8 @@ Acknowledgements (and co-authorship, where appropriate) are an important way for
 - Rosemarie Sadsad (Sydney Informatics Hub, University of Sydney)
 - Ben Menadue (National Computational Infrastructure)
 - Rika Kobayashi (National Computational Infrastructure)
+- Matthew Downton (National Computational Infrastructure)
+- Yue Sun (National Computational Infrastructure)
 
 ### Suggested acknowledgements
 
@@ -385,7 +387,7 @@ The authors acknowledge the technical assistance provided by the Sydney Informat
 
 ## Cite us to support us! 
    
-Willet, C., Chew, T., Samaha, G., Menadue, B. J., Kobayashi, R., & Sadsad, R. (2021). Fastq-to-BAM (Version 2.0) [Computer software]. https://doi.org/10.48546/workflowhub.workflow.146.1
+Willet, C., Chew, T., Samaha, G., Menadue, B. J., Downton, M., Sun, Y., Kobayashi, R., & Sadsad, R. (2021). Fastq-to-BAM (Version 2.0) [Computer software]. https://doi.org/10.48546/workflowhub.workflow.146.1
 
 ## References 
 
