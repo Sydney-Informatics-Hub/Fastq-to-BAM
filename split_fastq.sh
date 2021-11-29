@@ -27,7 +27,6 @@ fq1=$(ls ${fqpair}*R1*.f*q.gz) #Must check regex for each batch.
 fq2=$(ls ${fqpair}*R2*.f*q.gz)
 log=./Logs/split_fastq/${file}.log
 
-echo "Split_fastq. FASTQ_pair: $fqpar, R1: $fq2, R2, $fq2, File: $file, Log: $log, NCPUS: $NCPUS"
 
 fastp -i ${fq1} \
         -I ${fq2} \
