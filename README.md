@@ -150,6 +150,8 @@ Users will run a series of scripts for each stage of the Fastq-to-BAM pipeline. 
    
 All scripts must be run from the `Fastq-to-BAM` directory. For how to calculate the resource requirements for each `_run_parallel.pbs` script, please see [Resource Usage](#resource-usage) and [Benchmarking metrics](#benchmarking-metrics) sections. 
 
+**IMPORTANT NOTE: Due to variability in fastq file naming between sequencing companies, FastQC and split FASTQ steps require users to check the regular expression (regex) within their respective `make_input.sh` and `task.sh` scripts before running to ensure their fastq files have been correctly captured. Be sure to check and regex and edit where necessary**
+
 ### FastQC 
 
 This step will produce quality reports for all fastq files in a list. Each fastq file will be run as a separate task and each task is processed in parallel. For an explanation of reports, see the [FastQC documentation](https://www.bioinformatics.babraham.ac.uk/projects/fastqc/Help/). We recommend creating aggregate reports of FastQC results for all FASTQ files using MultiQC. See the [MultiQC documentation](https://multiqc.info/docs/) for more information. 
