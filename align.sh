@@ -30,8 +30,8 @@ seqtk=/scratch/er01/apps/seqtk/seqtk #Compiled for Gadi
 ref=../Reference/hs38DH.fasta
 outdir=../Align_split
 hladir=../HLA_fastq
-logdir=Logs/align
-errdir=Logs/align_error_capture
+logdir=Logs/Align
+errdir=Logs/Align_error_capture
 
 fqpair=`echo $1 | cut -d ',' -f 1`
 fq1=$(ls ${fqpair}*R1.f*q.gz) #Must check regex for each batch
