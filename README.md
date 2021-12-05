@@ -105,7 +105,7 @@ md5sum -c Reference.tar.gz.md5
 Next, unpack the Reference tar file: 
 
 ```
-tar -xvf Reference.gz.tar
+tar -xvf Reference.tar.gz
 ````
 
 The `Reference` directory must be located within the base directory to ensure the relative paths that are used within the scripts are correct. 
