@@ -25,7 +25,6 @@ set -e
 
 # Wont work if in run_parallel script
 postalt=./bwa-postalt.js
-seqtk=/scratch/er01/apps/seqtk/seqtk #Compiled for Gadi
 
 ref=../Reference/hs38DH.fasta
 outdir=../Align_split
@@ -52,7 +51,7 @@ err=${errdir}/${outPrefix}.err
 
 echo fqpair:$fqpair fq1:$fq1 fq2:$fq2 sampleID:$sampleID centre:$centre lib:$lib platform:$platform flowcell:$flowcell lane:$lane outPrefix:$outPrefix err:$err ref:$ref NCPUS:$NCPUS
 
-$seqtk mergepe $fq1 $fq2 | bwa mem -p -t $NCPUS \
+seqtk mergepe $fq1 $fq2 | bwa mem -p -t $NCPUS \
         -R "@RG\tID:${flowcell}.${lane}_${sampleID}_${lib}\tPL:${platform}\tPU:${flowcell}.${lane}\tSM:${sampleID}\tLB:${sampleID}_${lib}\tCN:${centre}" \
         -M ${ref} - 2> ${logdir}/${outPrefix}.log.bwamem | k8 ${postalt} -p ${hladir}/${outPrefix} ${ref}.alt \
         | samtools sort -n -@ $NCPUS -o ${outdir}/${outPrefix}.aln.bam
