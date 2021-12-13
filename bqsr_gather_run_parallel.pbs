@@ -35,9 +35,9 @@
 
 set -e
 
-INPUTS=./Inputs/bqsr_gather.inputs
+INPUTS=./Inputs/bqsr_gather.inputs*
 NCPUS=1
-PBS_NCI_NCPUS_PER_NODE=$PBS_NCPUS #Include if requesting less than a full node
+#PBS_NCI_NCPUS_PER_NODE=$PBS_NCPUS #Unhash if requesting less than a full node
 
 #########################################################
 # Do not edit below this line
