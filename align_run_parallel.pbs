@@ -38,6 +38,10 @@ set -e
 INPUTS=./Inputs/align.inputs
 NCPUS=2 #cpus per parallel task
 
+# unhash correct align script to run
+#SCRIPT=./align.sh
+#SCRIPT=./align_nonhuman.sh
+
 mkdir -p ../Align_split ../HLA_fastq ./Logs/Align ./Logs/Align_error_capture
 
 #########################################################
@@ -49,12 +53,7 @@ module load openmpi/4.1.0
 module load samtools/1.10
 module load bwa/0.7.17
 module load k8/0.2.5
-
-# SCRIPT
-#SCRIPT=./align.sh
-
-# SCRIPT FOR NON-HUMAN
-SCRIPT=./align_nonhuman.sh
+module load seqtk/1.3
 
 M=$(( PBS_NCI_NCPUS_PER_NODE / NCPUS )) #tasks per node
 
