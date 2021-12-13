@@ -42,7 +42,7 @@ lfs setstripe -c 15 $bam_out
 echo bam_in:$bam_in bam_out:$bam_out split_out:$split_out disc_out:$disc_out dup_log:$dup_log err:$err NCPUS:$NCPUS
 
 samtools view -@ 12 -h $bam_in \
-        | $samblaster -M -e -d $disc_out -s $split_out 2>$dup_log \
+        | samblaster -M -e -d $disc_out -s $split_out 2>$dup_log \
         | samtools sort -@ ${NCPUS} -m 4G -o $bam_out -
 
 mv ${bam_out}* ../Dedup_sort
