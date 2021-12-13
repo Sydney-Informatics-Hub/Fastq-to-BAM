@@ -1,0 +1,61 @@
+#!/bin/bash
+
+##########################################################################
+#
+# Platform: NCI Gadi HPC
+# Usage: qsub flagstats_run_parallel.pbs
+# Version: 2.0
+#
+# For more details see: https://github.com/Sydney-Informatics-Hub/Fastq-to-BAM
+#
+# If you use this script towards a publication, please acknowledge the
+# Sydney Informatics Hub (or co-authorship, where appropriate).
+#
+# Suggested acknowledgement:
+# The authors acknowledge the support provided by the Sydney Informatics Hub,
+# a Core Research Facility of the University of Sydney. This research/project
+# was undertaken with the assistance of resources and services from the National
+# Computational Infrastructure (NCI), which is supported by the Australian
+# Government, and the Australian BioCommons which is enabled by NCRIS via
+# Bioplatforms Australia funding.
+#
+##########################################################################
+
+#PBS -P 
+#PBS -N flagstat
+#PBS -l walltime=00:00:00
+#PBS -l ncpus=
+#PBS -l mem=GB
+#PBS -W umask=022
+#PBS -q normal
+#PBS -l wd
+#PBS -o ./Logs/flagstats.o
+#PBS -e ./Logs/flagstats.e
+#PBS -l storage=
+
+module load openmpi/4.0.2
+module load nci-parallel/1.0.0a
+module load samtools/1.10
+
+set -e
+
+SCRIPT=./flagstats.sh
+INPUTS=./Inputs/flagstats.inputs
+
+NCPUS=24 # NCPUS per task.
+
+
+#########################################################
+# Do not edit below this line
+#########################################################
+
+if [[ $PBS_QUEUE =~ bw-exec ]]; then CPN=28; else CPN=48; fi
+M=$(( CPN / NCPUS )) #tasks per node
+
+sed "s|^|${SCRIPT} |" ${INPUTS} > ${PBS_JOBFS}/input-file
+
+mpirun --np $((M * PBS_NCPUS / CPN)) \
+        --map-by node:PE=${NCPUS} \
+        nci-parallel \
+        --verbose \
+        --input-file ${PBS_JOBFS}/input-file
