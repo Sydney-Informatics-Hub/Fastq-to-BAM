@@ -35,7 +35,7 @@ out=../BQSR_tables/${labSampleID}.${intNum}.recal_data.table
 ref=
 thousandG_indels=../Reference/Known_vars/Homo_sapiens_assembly38.known_indels.vcf #hash out or replace depending on your data
 gold_standard_indels=../Reference/Known_vars/Mills_and_1000G_gold_standard.indels.hg38.vcf #hash out or replace depending on your data
-dbsnp=../Reference/Canis_familiaris_cf3-to-cf4.vcf.gz #replace depending on your data
+dbsnp=../Reference/Known_vars/Homo_sapiens_assembly38.dbsnp138.vcf #replace depending on your data
 
 gatk BaseRecalibrator \
         --java-options "-Xmx20g -DGATK_STACKTRACE_ON_USER_EXCEPTION=true" \
