@@ -33,14 +33,14 @@ rm -f $t_input
 rm -f $n_input
 rm -f $input
 
-dict=../Reference/canFam4.dict
-#contigs=$(awk '$2~/^SN/ {print $2}' $dict | sed 's/SN\://')
-#contigs=($contigs)
-#contigs+=( "unmapped" )
-
-contigs=$(ls -1 ../Reference/BQSR_apply_intervals | cut -d '-' -f 1)
+dict=
+contigs=$(awk '$2~/^SN/ {print $2}' $dict | sed 's/SN\://')
 contigs=($contigs)
 contigs+=( "unmapped" )
+
+#contigs=$(ls -1 ../Reference/BQSR_apply_intervals | cut -d '-' -f 1)
+#contigs=($contigs)
+#contigs+=( "unmapped" )
 
 while read -r sampleid labid seq_center library; do
         if [[ ! ${sampleid} =~ ^#.*$ ]]
