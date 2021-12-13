@@ -1,0 +1,54 @@
+#!/bin/bash
+
+##########################################################################
+#
+# Platform: NCI Gadi HPC
+# Usage: qsub bqsr_gather_serial.pbs
+# Version: 2.0
+#
+# For more details see: https://github.com/Sydney-Informatics-Hub/Fastq-to-BAM
+#
+# If you use this script towards a publication, please acknowledge the
+# Sydney Informatics Hub (or co-authorship, where appropriate).
+#
+# Suggested acknowledgement:
+# The authors acknowledge the support provided by the Sydney Informatics Hub,
+# a Core Research Facility of the University of Sydney. This research/project
+# was undertaken with the assistance of resources and services from the National
+# Computational Infrastructure (NCI), which is supported by the Australian
+# Government, and the Australian BioCommons which is enabled by NCRIS via
+# Bioplatforms Australia funding.
+#
+##########################################################################
+
+#PBS -P 
+#PBS -N bqsr_gather
+#PBS -l walltime=00:00:00
+#PBS -l ncpus=
+#PBS -l mem=GB
+#PBS -q express
+#PBS -W umask=022
+#PBS -l wd
+#PBS -o ./Logs/bqsr_gather_serial.o
+#PBS -e ./Logs/bqsr_gather_serial.e
+#PBS -lstorage=
+
+module load gatk/4.1.8.1
+
+set -e
+
+while read SAMPLE
+do
+        tables=$(find ../BQSR_tables -name "${SAMPLE}.*.recal_data.table")
+        tables=($tables)
+        tables_list=''
+
+        for file in ${tables[@]}
+        do
+                tables_list+=" -I $file"
+        done
+
+        gatk GatherBQSRReports \
+                $tables_list \
+                -O ../BQSR_tables/${SAMPLE}.recal_data.table
+done < ./Inputs/bqsr_gather.inputs*
