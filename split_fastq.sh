@@ -23,8 +23,8 @@
 
 fqpair=`echo $1 | cut -d ',' -f 1`
 file=$(basename $fqpair)
-fq1=$(ls ${fqpair}*R1*.f*q.gz) #Must check regex for each batch.
-fq2=$(ls ${fqpair}*R2*.f*q.gz)
+fq1=$(ls ${fqpair}*R1*f*q.gz) #Must check regex for each batch.
+fq2=$(ls ${fqpair}*R2*f*q.gz)
 log=./Logs/Split_fastq/${file}.log
 
 
