@@ -38,6 +38,10 @@ set -e
 INPUTS=./Inputs/bqsr_recal.inputs
 NCPUS=2
 
+# SCRIPT unhash depending on your dataset
+SCRIPT=./bqsr_recal.sh
+#SCRIPT=./bqsr_recal_nonhuman.sh
+
 mkdir -p ../BQSR_tables ./Logs/BQSR_recal ./Logs/BQSR_recal_error_capture
 
 #########################################################
@@ -47,10 +51,6 @@ mkdir -p ../BQSR_tables ./Logs/BQSR_recal ./Logs/BQSR_recal_error_capture
 module load nci-parallel/1.0.0a
 module load openmpi/4.1.0
 module load gatk/4.1.8.1
-
-# SCRIPT
-SCRIPT=./bqsr_recal.sh
-#SCRIPT=./bqsr_recal_nonhuman.sh
 
 M=$(( PBS_NCI_NCPUS_PER_NODE / NCPUS )) #tasks per node
 
