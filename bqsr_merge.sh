@@ -33,7 +33,7 @@ module load samtools/1.10
 log=./Logs/BQSR_merge/${labSampleID}.log
 err=./Logs/BQSR_merge_error_capture/${labSampleID}.err
 bam_out=../Final_bams/${labSampleID}.final.bam
-ref=../Reference/canFam4.fasta
+ref=
 
 \rm -rf $bam_out #attempt to set stripe on existing file will cause fatal error
 lfs setstripe -c 15 $bam_out
