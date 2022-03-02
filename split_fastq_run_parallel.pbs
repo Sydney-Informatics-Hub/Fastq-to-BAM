@@ -37,7 +37,7 @@ INPUTS=./Inputs/split_fastq.inputs
 # NCPUS per task
 NCPUS=4
 
-mkdir -p ../Split_fastq ./Logs/split_fastq
+mkdir -p ../Split_fastq ./Logs/Split_fastq
 
 #########################################################
 # Do not edit below this line
