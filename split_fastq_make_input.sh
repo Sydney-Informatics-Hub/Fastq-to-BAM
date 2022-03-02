@@ -33,7 +33,7 @@ awk 'NR>1' ${cohort}.config | while read sample
         #echo $sample #use this to check $sample is correctly capturing your sampleID
 
         # find fastq pairs for each $sample. Check regex matches your samples
-        fqpairs=$(find ../Fastq -name *${sample}*.f*q.gz | sed  's/.R1.*\|.R2.*\|_R1.*\|_R2.*\|_R1_*\|_R2_*//' | sort | uniq )
+        fqpairs=$(find ../Fastq/ -name *${sample}*.f*q.gz | sed  's/.R1.*\|.R2.*\|_R1.*\|_R2.*\|_R1_*\|_R2_*//' | sort | uniq )
         #echo $fqpairs #use this to check $fqpairs is capturing your fqs
 
         # print fq pair info to input file
