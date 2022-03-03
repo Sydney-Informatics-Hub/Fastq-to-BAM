@@ -70,7 +70,7 @@ do
                         done
                 done
         fi
-done < "../${cohort}.config"
+done < "${cohort}.config"
 
 tasks=`wc -l < $inputs`
 printf "Number of alignment tasks to run: ${tasks}\n"
