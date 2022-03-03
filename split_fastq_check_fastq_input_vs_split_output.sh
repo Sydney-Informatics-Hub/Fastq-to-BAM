@@ -33,8 +33,9 @@ rm -rf $out
 
 err=0
 #1 - Get original number of pairs from fastQC data.txt
-qc1=$(ls ../FastQC/${fastq}*R1*fastqc/fastqc_data.txt)
-qc2=$(ls ../FastQC/${fastq}*R2*fastqc/fastqc_data.txt)
+# Check regex matches the way FastQC outputs are named 
+qc1=$(ls ../FastQC/${fastq}*1/${fastq}*R1*fastqc/fastqc_data.txt)
+qc2=$(ls ../FastQC/${fastq}*2/${fastq}*R2*fastqc/fastqc_data.txt)
 
 fastqc_1=$(grep "Total Sequences" $qc1 | awk '{print $3}')
 fastqc_2=$(grep "Total Sequences" $qc2 | awk '{print $3}')
