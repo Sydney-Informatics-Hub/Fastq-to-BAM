@@ -42,5 +42,5 @@ awk 'NR>1' ${cohort}.config | while read sample
         done
 tasks=`wc -l < ${inputs}`
 printf "Number of fastq pairs to split: ${tasks}\n"
-printf "!!! If you changed the \$fqpair regex in this script please confirm it matches \$fq1 and \$fq2 regex in the split_fastq.sh script before running split_fastq_run_parallel.pbs!!!\n"
-
+printf "\nIf you changed the \$fqpair regex in this script please confirm it matches \$fq1 and \$fq2 regex in the split_fastq.sh script before running split_fastq_run_parallel.pbs!!!\n"
+printf "You will also need to change the regex in the split_fastq_check_fastq_input scripts and the align scripts in order to run them successfully"
