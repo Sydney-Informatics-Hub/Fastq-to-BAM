@@ -74,3 +74,4 @@ done < "${cohort}.config"
 
 tasks=`wc -l < $inputs`
 printf "Number of alignment tasks to run: ${tasks}\n"
+printf "Before running align_run_parallel.pbs, edit the script and unhash the correct task script for human/non-human samples\n"
