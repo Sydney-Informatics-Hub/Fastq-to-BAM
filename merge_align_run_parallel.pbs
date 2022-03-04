@@ -41,7 +41,7 @@ INPUTS=./Inputs/merge_align.inputs
 NCPUS=28 #normalbw
 #NCPUS=48 #reset for extra small samples - PBS to assign only one job per node, but run sambamba on 24 CPU
 
-mkdir -p ../Merge_align ./Logs/Merge_align_error_capture
+mkdir -p ../Merge_align ./Logs/Merge_align_error_capture ./Logs/Merge_align
 
 #########################################################
 # Do not edit below this line
