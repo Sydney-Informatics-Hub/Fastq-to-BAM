@@ -86,3 +86,4 @@ then
         printf "Number of ApplyBQSR tumour sample tasks to run: ${tasks}\n"
         sort -t ',' -n -k3 $t_input > ./Inputs/bqsr_apply_reordered_tumour.input
         mv ./Inputs/bqsr_apply_reordered_tumour.input $t_input
+fi
