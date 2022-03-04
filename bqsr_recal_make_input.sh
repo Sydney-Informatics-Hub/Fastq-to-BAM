@@ -98,3 +98,4 @@ fi
 
 printf "\n!!! Before running bqsr_recal_run_parallel.pbs, edit the script and unhash the correct task script for human/non-human samples\n"
 printf "If you're using the non-human script, remember to fill in the \$dbsnp variable\n"
+
