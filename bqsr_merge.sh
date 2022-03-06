@@ -27,9 +27,6 @@ labSampleID=$1
 
 jvm=10 # Set this variable to 28 for hugemem queue or 10 for normal queue
 
-module load gatk/4.1.2.0
-module load samtools/1.10
-
 log=./Logs/BQSR_merge/${labSampleID}.log
 err=./Logs/BQSR_merge_error_capture/${labSampleID}.err
 bam_out=../Final_bams/${labSampleID}.final.bam
@@ -38,16 +35,14 @@ ref=
 \rm -rf $bam_out #attempt to set stripe on existing file will cause fatal error
 lfs setstripe -c 15 $bam_out
 
-
 gatk GatherBamFiles \
         --java-options "-Xmx${jvm}G -DGATK_STACKTRACE_ON_USER_EXCEPTION=true" \
         -I ./Inputs/BQSR_merge_lists/${labSampleID}.list \
         -O $bam_out \
         -R $ref \
-        --CREATE_INDEX=true >> $log 2>&1
+        --CREATE_INDEX true >> $log 2>&1
         #\
-        #--CREATE_MD5_FILE=true #Do not create md5 in this job, as it will cost 3x SU
-
+        #--CREATE_MD5_FILE true #Do not create md5 in this job, as it will cost 3x SU
 
 if ! samtools quickcheck $bam_out
 then
