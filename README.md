@@ -1,8 +1,8 @@
-# FASTQ-TO-BAM User Guide
+# Fastq-to-BAM User Guide
 
 ## Description  
 
-This repository contains a genome alignment workflow that takes raw FASTQ files, aligns them to a reference genome and outputs analysis ready BAM files. This workflow is designed for the National Computational Infrastructure's (NCI) Gadi supercompter, leveraging multiple nodes on NCI Gadi to run all stages of the workflow in parallel, either massively parallel using the scatter-gather approach or parallel by sample. Parellelisation across the cluster was achieved with Open MPI v.4.1.0 [(Graham et al. 2005)](https://dl.acm.org/doi/10.1007/11752578_29), along with NCI's utility script nci-parallel. It consists of a number of stages and follows the BORAD Institute's best practice recommendations. The stages of the pipeline are as follows:
+This repository contains a genome alignment workflow that takes raw FASTQ files, aligns them to a reference genome and outputs analysis ready BAM files. This workflow is designed for the National Computational Infrastructure's (NCI) Gadi supercompter, leveraging multiple nodes on NCI Gadi to run all stages of the workflow in parallel, either massively parallel using the scatter-gather approach or parallel by sample. Parellelisation across the cluster was achieved with Open MPI v.4.1.0 [(Graham et al. 2005)](https://dl.acm.org/doi/10.1007/11752578_29), along with NCI's utility script nci-parallel. It consists of a number of stages and follows the BROAD Institute's best practice recommendations. The stages of the pipeline are as follows:
 
 #### Step 1: Split FASTQ files 
 Paired FASTQ files are initially split into smaller files of approximately 500 K read pairs with fastp v.0.20.0 [(Chen et al. 2018)](https://academic.oup.com/bioinformatics/article/34/17/i884/5093234) for parallel alignment. Reads are then aligned to Hg38 + alt contigs as downloaded by bwakit v. 0.7.17 ‘run-gen-ref’. 
