@@ -48,7 +48,6 @@ do
                 #Get the flowcell and lane info for each unique FASTQ pair
                 for ((i=0; i<${#fqpairs[@]}; i++))
                 do
-                        lib_diff=''
                         fq1=$(ls ${fqpairs[i]}*R1*.f*q.gz) #Must check regex for each batch.
                         flowcell=$(zcat ${fq1} | head -1 | cut -d ':' -f 3)
                         lane=$(zcat ${fq1} | head -1 | cut -d ':' -f 4)
@@ -61,12 +60,7 @@ do
 
                         for ((c=0; c<${#splitpairs[@]}; c++))
                         do
-                                if [ "$lib_diff" ]
-                                then
-                                        printf "${splitpairs[c]},${labid},${seqcentre},${lib_diff},${platform},${flowcell},${lane}\n" >> $inputs
-                                else
-                                        printf "${splitpairs[c]},${labid},${seqcentre},${lib},${platform},${flowcell},${lane}\n" >> $inputs
-                                fi
+                                printf "${splitpairs[c]},${labid},${seqcentre},${lib},${platform},${flowcell},${lane}\n" >> $inputs
                         done
                 done
         fi
