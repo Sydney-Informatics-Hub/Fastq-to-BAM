@@ -1,5 +1,12 @@
 # Fastq-to-BAM User Guide
 
+# ⚠️ Notice of workflow deprecation
+This workflow is no longer actively supported or maintained. While you are welcome to use the existing code, please note that no further updates, bug fixes, or support will be provided.
+
+For questions or alternative recommendations for University of Sydney staff and students, please get in touch with sih_info@sydney.edu.au. You can find alternatives at [WorkflowHub](https://workflowhub.eu/)
+
+Thank you for your understanding!
+
 ## Description  
 
 This repository contains a genome alignment workflow that takes raw FASTQ files, aligns them to a reference genome and outputs analysis ready BAM files. This workflow is designed for the National Computational Infrastructure's (NCI) Gadi supercompter, leveraging multiple nodes on NCI Gadi to run all stages of the workflow in parallel, either massively parallel using the scatter-gather approach or parallel by sample. Parellelisation across the cluster was achieved with Open MPI v.4.1.0 [(Graham et al. 2005)](https://dl.acm.org/doi/10.1007/11752578_29), along with NCI's utility script nci-parallel. It consists of a number of stages and follows the BROAD Institute's best practice recommendations. The stages of the pipeline are as follows:
